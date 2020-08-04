@@ -1,26 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect} from 'react';
 import './App.css';
+import * as d3 from 'd3'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    useEffect(() => {
+        d3.select("svg")
+            .selectAll("circle")
+            .data([1])
+            .enter()
+            .append("circle")
+            .attr("data-testid", "foo")
+            .attr("fill", "bar")
+            .attr("class", "node-circle")
+            .attr("cx", 130)
+            .attr("cy", 130)
+            .attr("r", 50);
+    }, [])
+    return (
+        <svg width={800} height={600}>
+        </svg>
+    );
 }
 
 export default App;
