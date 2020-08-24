@@ -1,8 +1,14 @@
-circle{
-  fill: #61DAFB;
+body {
+    background-color: #282c34;
+    overflow: hidden;
 }
 
+.node-text {
+    alignment-baseline: middle;
+    fill: white;
+    cursor: pointer;
+}
 
-body{
-  background-color: #282c34;
+.node-text:hover{
+    text-decoration: underline;
 }
