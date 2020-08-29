@@ -1,11 +1,11 @@
-import { getInitialState } from "./nodeTreeReducer";
+import { getInitialState, NodesContainer } from "./nodeTreeReducer";
 import { drop } from "./nodeTreeReducer";
 
 describe("having a default set of nodes", () => {
   const nodes = getInitialState();
 
   it("order should be 1 2 3", function () {
-    expect(nodes.map((n) => n.title)).toEqual(["Root 1", "Root 2", "Root 3"]);
+    expect(getChildrenTitles(nodes, 'HOME')).toEqual(["Root 1", "Root 2", "Root 3"]);
   });
 
   it("placing Root 3 before Root 1 should set Root 3 as first node", function () {
@@ -16,7 +16,7 @@ describe("having a default set of nodes", () => {
       rect: {} as any,
     });
 
-    expect(res.map((n) => n.title)).toEqual(["Root 3", "Root 1", "Root 2"]);
+    expect(getChildrenTitles(res, "HOME")).toEqual(["Root 3", "Root 1", "Root 2"]);
   });
 
   it("having a default set of nodes placing Root 3 after Root 1 should set Root 3 as second node", function () {
@@ -27,6 +27,9 @@ describe("having a default set of nodes", () => {
       rect: {} as any,
     });
 
-    expect(res.map((n) => n.title)).toEqual(["Root 1", "Root 3", "Root 2"]);
+    expect(getChildrenTitles(res, "HOME")).toEqual(["Root 1", "Root 3", "Root 2"]);
   });
 });
+
+const getChildrenTitles = (nodes: NodesContainer, itemId: string) =>
+  nodes[itemId].children.map((n) => nodes[n].title);

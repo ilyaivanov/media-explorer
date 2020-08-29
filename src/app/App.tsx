@@ -15,6 +15,7 @@ import {
   getInitialState,
   Item,
   toggleVisibility,
+  traverseOpenNodes,
 } from "./nodeTreeReducer";
 
 class App extends React.Component {
@@ -42,6 +43,7 @@ class App extends React.Component {
 
     this.setState({
       items: drop(
+        // @ts-ignore
         this.state.items,
         this.state.dragState.dropTargetMarkerPosition as DropTarget
       ),
@@ -70,17 +72,14 @@ class App extends React.Component {
   };
 
   renderItem = (item: Item, level: number): JSX.Element => (
-    <Fragment key={item.id}>
-      <ItemView
-        startMoving={this.startMoving}
-        onMouseMove={this.onMouseMoveOverItem}
-        onPress={this.toggleOpenClosed}
-        item={item}
-        level={level}
-      />
-      {item.isOpen &&
-        item.children.map((item) => this.renderItem(item, level + 1))}
-    </Fragment>
+    <ItemView
+      key={item.id}
+      startMoving={this.startMoving}
+      onMouseMove={this.onMouseMoveOverItem}
+      onPress={this.toggleOpenClosed}
+      item={item}
+      level={level}
+    />
   );
 
   render() {
@@ -91,7 +90,7 @@ class App extends React.Component {
           (this.state.dragState.movingItemInfo ? "page-during-drag" : "")
         }
       >
-        {this.state.items.map((item) => this.renderItem(item, 0))}
+        {traverseOpenNodes(this.state.items, this.renderItem)}
         {this.state.dragState.movingItemInfo && (
           <div
             className="circle"
