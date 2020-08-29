@@ -53,22 +53,35 @@ export const drop = (items: NodesContainer, dropDescription: DropTarget) => {
       (i) => i != dropDescription.itemOverId
     ),
   };
-  const nodeUnderParentId = findParentId(items, dropDescription.itemUnderId);
 
-  let targetIndex = items[nodeUnderParentId].children.indexOf(
-    dropDescription.itemUnderId
-  );
+  if (dropDescription.dropPlacement === "inside") {
+    let targetIndex = 0;
 
-  if (dropDescription.dropPlacement == "after") {
-    targetIndex += 1;
+    const newChildren = [...items[dropDescription.itemUnderId].children];
+    newChildren.splice(targetIndex, 0, dropDescription.itemOverId);
+    items[dropDescription.itemUnderId] = {
+      ...items[dropDescription.itemUnderId],
+      children: newChildren,
+    };
+  } else {
+    const nodeUnderParentId = findParentId(items, dropDescription.itemUnderId);
+
+    let targetIndex = items[nodeUnderParentId].children.indexOf(
+      dropDescription.itemUnderId
+    );
+
+    if (dropDescription.dropPlacement == "after") {
+      targetIndex += 1;
+    }
+
+    const newChildren = [...items[nodeUnderParentId].children];
+    newChildren.splice(targetIndex, 0, dropDescription.itemOverId);
+    items[nodeUnderParentId] = {
+      ...items[nodeUnderParentId],
+      children: newChildren,
+    };
   }
 
-  const newChildren = [...items[nodeUnderParentId].children];
-  newChildren.splice(targetIndex, 0, dropDescription.itemOverId);
-  items[nodeUnderParentId] = {
-    ...items[nodeUnderParentId],
-    children: newChildren,
-  };
   return items;
 };
 

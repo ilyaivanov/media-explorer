@@ -19,7 +19,7 @@ describe("having a default set of nodes", () => {
     expect(getChildrenTitles(res, "HOME")).toEqual(["Root 3", "Root 1", "Root 2"]);
   });
 
-  it("having a default set of nodes placing Root 3 after Root 1 should set Root 3 as second node", function () {
+  it("placing Root 3 after Root 1 should set Root 3 as second node", function () {
     const res = drop(nodes, {
       dropPlacement: "after",
       itemUnderId: "1",
@@ -28,6 +28,18 @@ describe("having a default set of nodes", () => {
     });
 
     expect(getChildrenTitles(res, "HOME")).toEqual(["Root 1", "Root 3", "Root 2"]);
+  });
+
+  it("placing Root 3 inside of Root 1 should set Root 3 as first child of Root 1", function () {
+    const res = drop(nodes, {
+      dropPlacement: "inside",
+      itemUnderId: "1",
+      itemOverId: "3",
+      rect: {} as any,
+    });
+
+    expect(getChildrenTitles(res, "HOME")).toEqual(["Root 1", "Root 2"]);
+    expect(getChildrenTitles(res, "1")).toEqual(["Root 3", "Root 4", "Root 5"]);
   });
 });
 
