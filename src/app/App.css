@@ -49,12 +49,15 @@ body {
 }
 
 .page {
-  margin: 20px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: row;
+  height: 100vh;
 }
 .page > div {
   flex: 1;
+
+  overflow-y: auto;
 }
 .page-during-drag {
   user-select: none;
@@ -79,4 +82,5 @@ body {
 /*SEARCH*/
 .search-input {
   width: 100%;
+  box-sizing: border-box;
 }
