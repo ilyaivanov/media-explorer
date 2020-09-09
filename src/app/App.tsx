@@ -11,28 +11,50 @@ import {
   DropTarget,
 } from "./dragReducer";
 import {
+  setChildren,
   drop,
   getInitialState,
   Item,
+  NodesContainer,
+  removeAllChildren,
   toggleVisibility,
   traverseOpenNodes,
+  appendChildren,
+  removeNode,
+  renameNode,
 } from "./nodeTreeReducer";
+import { DivMouseEvent, Row } from "./Row";
+import { DropIndicator } from "./DropIndicator";
+// @ts-ignore
+import debounce from "lodash/debounce";
+import YouTube from "react-youtube";
 
 class App extends React.Component {
   state = {
-    items: getInitialState(),
+    items: {},
     dragState: initialDragState,
+    searchTerm: "",
+    videoBeingPlayed: undefined as string | undefined,
+  };
+
+  updateItems = (items: NodesContainer) => {
+    localStorage.setItem(ITEMS_LOCAL_STORAGE_KEY, JSON.stringify(items));
+    this.setState({ items });
   };
 
   toggleOpenClosed = (itemToToggle: Item) =>
-    this.setState({
-      items: toggleVisibility(this.state.items, itemToToggle.id),
-    });
+    this.updateItems(toggleVisibility(this.state.items, itemToToggle.id));
 
   startMoving = (item: Item, e: DivMouseEvent) => {
     this.dispatchDragAction(startMoving(item.id, e));
     this.registerDragEvents();
   };
+
+  componentDidMount() {
+    const itemsSerialized = localStorage.getItem(ITEMS_LOCAL_STORAGE_KEY);
+    if (itemsSerialized) this.setState({ items: JSON.parse(itemsSerialized) });
+    else this.setState({ items: getInitialState() });
+  }
 
   componentWillUnmount() {
     this.unregisterDragEvents();
@@ -41,19 +63,43 @@ class App extends React.Component {
   onStopMoving = () => {
     console.log("DROP");
 
-    this.setState({
-      items: drop(
+    this.updateItems(
+      drop(
         // @ts-ignore
         this.state.items,
         this.state.dragState.dropTargetMarkerPosition as DropTarget
-      ),
-    });
+      )
+    );
+
     this.dispatchDragAction(stopMoving());
     this.unregisterDragEvents();
   };
 
   onMouseMove = (e: MouseEvent) => this.dispatchDragAction(move(e));
 
+  removeNode = (item: Item) =>
+    this.updateItems(removeNode(this.state.items, item.id));
+  renameNode = (item: Item, newText: string) =>
+    this.updateItems(renameNode(this.state.items, item.id, newText));
+
+  createNewNode = () => {
+    this.updateItems(
+      appendChildren(
+        // @ts-ignore
+        this.state.items,
+        "HOME",
+        [
+          {
+            children: [],
+            videoId: undefined,
+            title: "New Node",
+            isOpen: false,
+            id: Math.random() + "",
+          },
+        ]
+      )
+    );
+  };
   dispatchDragAction = (action: DragAction) => {
     const newState = dragReducer(this.state.dragState, action);
     this.setState({ dragState: newState });
@@ -71,12 +117,47 @@ class App extends React.Component {
     document.removeEventListener("mousemove", this.onMouseMove);
   };
 
+  onTextChanged = (searchTerm: string) => {
+    this.setState({ searchTerm });
+    this.search(searchTerm);
+  };
+
+  search = debounce(
+    (searchTerm: string) => {
+      const url =
+        "https://europe-west1-lean-watch.cloudfunctions.net/getVideos?q=" +
+        searchTerm;
+      fetch(url)
+        .then((response) => response.json())
+        .then((data: any) => {
+          //parse
+          const responseItems = data.items.map((i: any) => ({
+            id: i.id,
+            title: i.name,
+            children: [],
+            isOpen: false,
+            videoId: i.itemId,
+          }));
+          const { items } = this.state;
+          const without = removeAllChildren(items, "SEARCH");
+          const with1 = setChildren(without, "SEARCH", responseItems);
+          this.updateItems(with1);
+        });
+    },
+    600,
+    { trailling: true }
+  );
   renderItem = (item: Item, level: number): JSX.Element => (
-    <ItemView
+    <Row
       key={item.id}
       startMoving={this.startMoving}
       onMouseMove={this.onMouseMoveOverItem}
+      onRemove={this.removeNode}
+      onRename={this.renameNode}
       onPress={this.toggleOpenClosed}
+      onCirclePress={(item: Item) =>
+        this.setState({ videoBeingPlayed: item.videoId })
+      }
       item={item}
       level={level}
     />
@@ -90,95 +171,45 @@ class App extends React.Component {
           (this.state.dragState.movingItemInfo ? "page-during-drag" : "")
         }
       >
-        {traverseOpenNodes(this.state.items, this.renderItem)}
-        {this.state.dragState.movingItemInfo && (
-          <div
-            className="circle"
-            style={{
-              position: "fixed",
-              backgroundColor: "lightgray",
-              pointerEvents: "none",
-              top: this.state.dragState.movingItemInfo.y,
-              left: this.state.dragState.movingItemInfo.x,
-            }}
+        <div>
+          <h5>Home</h5>
+          {traverseOpenNodes(this.state.items, "HOME", this.renderItem)}
+          <button onClick={this.createNewNode}>add</button>
+          <DropIndicator dragState={this.state.dragState} />
+        </div>
+        <div>
+          <h5>Search</h5>
+          <input
+            type="text"
+            className="search-input"
+            value={this.state.searchTerm}
+            onChange={(e) => this.onTextChanged(e.currentTarget.value)}
           />
-        )}
-        {this.state.dragState.dropTargetMarkerPosition && (
-          <div
-            style={{
-              position: "fixed",
-              pointerEvents: "none",
-              top: this.state.dragState.dropTargetMarkerPosition.rect.y + 10,
-              left: this.state.dragState.dropTargetMarkerPosition.rect.x + 300,
-            }}
+          {traverseOpenNodes(this.state.items, "SEARCH", this.renderItem)}
+        </div>
+        <div style={{ position: "fixed", bottom: 20, right: 20 }}>
+          {this.state.videoBeingPlayed && (
+            <YouTube videoId={this.state.videoBeingPlayed} opts={playerOpts} />
+          )}
+        </div>
+        <div style={{ position: "fixed", bottom: 20, left: 20 }}>
+          <button
+            onClick={() => localStorage.removeItem(ITEMS_LOCAL_STORAGE_KEY)}
           >
-            {this.state.dragState.dropTargetMarkerPosition.dropPlacement}
-          </div>
-        )}
+            clear
+          </button>
+        </div>
       </div>
     );
   }
 }
+const ITEMS_LOCAL_STORAGE_KEY = "items:v1";
+const playerOpts: any = {
+  height: 150,
+  width: 400,
+  playerVars: {
+    // https://developers.google.com/youtube/player_parameters
+    autoplay: 1,
+  },
+};
 export default App;
-
-//UI primitives for the app
-type DivMouseEvent = React.MouseEvent<HTMLDivElement, MouseEvent>;
-const ItemView = ({
-  item,
-  onPress,
-  startMoving,
-  onMouseMove,
-  level = 0,
-}: {
-  item: Item;
-  onPress: (item: Item) => void;
-  startMoving: (item: Item, e: DivMouseEvent) => void;
-  onMouseMove: (item: Item, e: DivMouseEvent, itemLevel: number) => void;
-  level?: number;
-}) => {
-  return (
-    <div
-      className="row"
-      style={{ paddingLeft: level * 20 }}
-      onMouseMove={(e) => {
-        onMouseMove(item, e, level);
-      }}
-    >
-      <Triangle
-        className={
-          "triangle " +
-          (item.children.length === 0 ? "transparent " : "") +
-          (item.isOpen ? "open " : "")
-        }
-        data-testid={"triangle-" + item.id}
-        onClick={() => onPress(item)}
-      />
-      <div className={`circle`} />
-      <div className="text">{item.title}</div>
-      <div onMouseDown={(e) => startMoving(item, e)} className="small-text">
-        move
-      </div>
-    </div>
-  );
-};
-
-const Triangle = (props: any) => {
-  const width = 20;
-  const verticalPadding = 7;
-  const horizontalPadding = 4;
-  return (
-    <svg
-      height={width}
-      width={width}
-      viewBox={`0 0 ${width} ${width}`}
-      {...props}
-    >
-      <polygon
-        points={`
-        ${verticalPadding},${horizontalPadding} 
-        ${width - verticalPadding},${width / 2} 
-        ${verticalPadding},${width - horizontalPadding}`}
-      />
-    </svg>
-  );
-};

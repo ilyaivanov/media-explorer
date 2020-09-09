@@ -4,6 +4,7 @@ const id = () => Math.random() + "";
 
 export interface Item {
   id: string;
+  videoId?: string;
   title: string;
   children: string[];
   isOpen: boolean;
@@ -11,6 +12,7 @@ export interface Item {
 
 export const getInitialState = (): NodesContainer => ({
   HOME: { id: "HOME", title: "HOME", isOpen: false, children: ["1", "2", "3"] },
+  SEARCH: { id: "SEARCH", title: "SEARCH", isOpen: false, children: [] },
   "1": { id: "1", title: "Root 1", isOpen: false, children: ["4", "5"] },
   "2": { id: "2", title: "Root 2", isOpen: false, children: [] },
   "3": { id: "3", title: "Root 3", isOpen: false, children: [] },
@@ -29,8 +31,58 @@ export const toggleVisibility = (items: NodesContainer, itemId: string) => {
   return items;
 };
 
+export const removeAllChildren = (nodes: NodesContainer, id: string) => {
+  return {
+    ...nodes,
+    [id]: {
+      ...nodes[id],
+      children: [],
+    },
+  };
+};
+
+export const setChildren = (
+  nodes: NodesContainer,
+  id: string,
+  items: Item[]
+) => {
+  const copy = {
+    ...nodes,
+  };
+  items.forEach((item) => {
+    copy[item.id] = item;
+  });
+  return {
+    ...copy,
+    [id]: {
+      ...copy[id],
+      children: items.map((i) => i.id),
+    },
+  };
+};
+export const appendChildren = (
+  nodes: NodesContainer,
+  id: string,
+  items: Item[]
+) => {
+  const copy = {
+    ...nodes,
+  };
+  items.forEach((item) => {
+    copy[item.id] = item;
+  });
+  return {
+    ...copy,
+    [id]: {
+      ...copy[id],
+      children: nodes[id].children.concat(items.map((i) => i.id)),
+    },
+  };
+};
+
 export const traverseOpenNodes = (
   items: NodesContainer,
+  rootKey: string,
   mapper: (item: Item, level: number) => any
 ) => {
   const mapItem = (key: string, level: number): any => {
@@ -41,18 +93,14 @@ export const traverseOpenNodes = (
       ];
     else return mapper(items[key], level);
   };
-  return items.HOME.children.map((i) => mapItem(i, 0)).flat(Number.MAX_VALUE);
+  if (items[rootKey])
+    return items[rootKey].children
+      .map((i) => mapItem(i, 0))
+      .flat(Number.MAX_VALUE);
 };
 
 export const drop = (items: NodesContainer, dropDescription: DropTarget) => {
-  const nodeOverParentId = findParentId(items, dropDescription.itemOverId);
-
-  items[nodeOverParentId] = {
-    ...items[nodeOverParentId],
-    children: items[nodeOverParentId].children.filter(
-      (i) => i != dropDescription.itemOverId
-    ),
-  };
+  removeNode(items, dropDescription.itemOverId);
 
   if (dropDescription.dropPlacement === "inside") {
     let targetIndex = 0;
@@ -85,6 +133,31 @@ export const drop = (items: NodesContainer, dropDescription: DropTarget) => {
   return items;
 };
 
+//TODO: GET RID OF MUTATION HERE
+export const removeNode = (
+  nodes: NodesContainer,
+  id: string
+): NodesContainer => {
+  const nodeOverParentId = findParentId(nodes, id);
+  nodes[nodeOverParentId] = {
+    ...nodes[nodeOverParentId],
+    children: nodes[nodeOverParentId].children.filter((i) => i != id),
+  };
+  return nodes;
+};
+
+//TODO: GET RID OF MUTATION HERE
+export const renameNode = (
+  nodes: NodesContainer,
+  id: string,
+  newName: string
+): NodesContainer => {
+  nodes[id] = {
+    ...nodes[id],
+    title: newName,
+  };
+  return nodes;
+};
 const findParentId = (nodes: NodesContainer, childId: string) =>
   Object.keys(nodes).find(
     (parentKey) => nodes[parentKey].children.indexOf(childId) > -1
