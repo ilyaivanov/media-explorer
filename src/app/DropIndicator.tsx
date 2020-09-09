@@ -1,5 +1,5 @@
 import React from "react";
-import { DragState } from "./dragReducer";
+import { DragState, DropTarget } from "./dragReducer";
 
 export const DropIndicator = ({ dragState }: { dragState: DragState }) => {
   return (
@@ -15,18 +15,6 @@ export const DropIndicator = ({ dragState }: { dragState: DragState }) => {
             left: dragState.movingItemInfo.x,
           }}
         />
-      )}
-      {dragState.dropTargetMarkerPosition && (
-        <div
-          style={{
-            position: "fixed",
-            pointerEvents: "none",
-            top: dragState.dropTargetMarkerPosition.rect.y + 10,
-            left: dragState.dropTargetMarkerPosition.rect.x + 300,
-          }}
-        >
-          {dragState.dropTargetMarkerPosition.dropPlacement}
-        </div>
       )}
     </React.Fragment>
   );

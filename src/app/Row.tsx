@@ -75,13 +75,13 @@ export const Row = ({
         )}
       </div>
       <div onMouseDown={() => setIsRenaming(true)} className="small-text">
-        rename
+        E
       </div>
       <div onMouseDown={() => onRemove(item)} className="small-text red-text">
-        remove
+        X
       </div>
       <div onMouseDown={(e) => startMoving(item, e)} className="small-text">
-        move
+        M
       </div>
     </div>
   );

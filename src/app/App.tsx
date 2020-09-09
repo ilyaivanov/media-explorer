@@ -1,33 +1,34 @@
-import React, { Fragment } from "react";
+import React from "react";
 import "./App.css";
 import {
   DragAction,
   dragReducer,
+  DropTarget,
   initialDragState,
+  mouseMoveOtherItem,
   move,
   startMoving,
   stopMoving,
-  mouseMoveOtherItem,
-  DropTarget,
 } from "./dragReducer";
 import {
-  setChildren,
+  appendChildren,
   drop,
   getInitialState,
   Item,
   NodesContainer,
   removeAllChildren,
-  toggleVisibility,
-  traverseOpenNodes,
-  appendChildren,
   removeNode,
   renameNode,
+  setChildren,
+  toggleVisibility,
+  traverseOpenNodes,
 } from "./nodeTreeReducer";
 import { DivMouseEvent, Row } from "./Row";
 import { DropIndicator } from "./DropIndicator";
 // @ts-ignore
 import debounce from "lodash/debounce";
-import YouTube from "react-youtube";
+import { Player } from "./Player";
+import { DropMarker } from "./DropMarker";
 
 class App extends React.Component {
   state = {
@@ -61,8 +62,6 @@ class App extends React.Component {
   }
 
   onStopMoving = () => {
-    console.log("DROP");
-
     this.updateItems(
       drop(
         // @ts-ignore
@@ -176,6 +175,11 @@ class App extends React.Component {
           {traverseOpenNodes(this.state.items, "HOME", this.renderItem)}
           <button onClick={this.createNewNode}>add</button>
           <DropIndicator dragState={this.state.dragState} />
+          {this.state.dragState.dropTargetMarkerPosition && (
+            <DropMarker
+              dropTarget={this.state.dragState.dropTargetMarkerPosition}
+            />
+          )}
         </div>
         <div>
           <h5>Search</h5>
@@ -189,7 +193,7 @@ class App extends React.Component {
         </div>
         <div style={{ position: "fixed", bottom: 20, right: 20 }}>
           {this.state.videoBeingPlayed && (
-            <YouTube videoId={this.state.videoBeingPlayed} opts={playerOpts} />
+            <Player videoId={this.state.videoBeingPlayed} />
           )}
         </div>
         <div style={{ position: "fixed", bottom: 20, left: 20 }}>
@@ -204,12 +208,5 @@ class App extends React.Component {
   }
 }
 const ITEMS_LOCAL_STORAGE_KEY = "items:v1";
-const playerOpts: any = {
-  height: 150,
-  width: 400,
-  playerVars: {
-    // https://developers.google.com/youtube/player_parameters
-    autoplay: 1,
-  },
-};
+
 export default App;

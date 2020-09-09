@@ -20,6 +20,7 @@ export const getInitialState = (): NodesContainer => ({
   "5": { id: "5", title: "Root 5", isOpen: false, children: ["6"] },
   "6": { id: "6", title: "Root 6", isOpen: false, children: [] },
 });
+
 export type NodesContainer = {
   [key: string]: Item;
 };
