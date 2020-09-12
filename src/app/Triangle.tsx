@@ -1,9 +1,8 @@
 import React from "react";
 
 export const Triangle = (props: any) => {
-  const width = 20;
-  const verticalPadding = 7;
-  const horizontalPadding = 4;
+  const width = props.width || 10;
+
   return (
     <svg
       height={width}
@@ -13,10 +12,12 @@ export const Triangle = (props: any) => {
     >
       <polygon
         points={`
-        ${verticalPadding},${horizontalPadding} 
-        ${width - verticalPadding},${width / 2} 
-        ${verticalPadding},${width - horizontalPadding}`}
+        ${0},${0} 
+        ${width},${width / 2} 
+        ${0},${width}`}
       />
     </svg>
   );
 };
+
+
