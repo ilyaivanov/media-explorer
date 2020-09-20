@@ -1,39 +1,27 @@
 import React from "react";
 import "./App.css";
 import { reducer } from "./state/reducer";
-import * as actions from "./state/actions";
 import { Player } from "./Player";
 import { initialState } from "./state/initialState";
-import Menu from "./Menu";
-import { SearchPanel } from "./SearchPanel";
-import { ItemsTree } from "./ItemsTree";
 import { ItemBeingDraggedAvatar } from "./ItemBeingDraggedAvatar";
-// @ts-ignore
-import cn from "classnames";
 import { DropDestinationLine } from "./DropDestinationIndicator";
+import { setDispatch } from "./globalDispatch";
+import { Sidebar } from "./newApp";
+import Gallery from "./newApp/Gallery";
 
 const App = () => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
+  setDispatch(dispatch);
 
   return (
-    <div
-      className={cn({
-        "page-container": true,
-        "page-during-drag": state.itemBeingDraggedId,
-      })}
-    >
-      <Menu options={state.options} dispatch={dispatch} />
+    <div>
       <div className="page">
-        <div>
-          <ItemsTree
-            listenToDragEvents={!!state.itemBeingDraggedId}
-            items={state.items}
-            dispatch={dispatch}
-            rootName="HOME"
-          />
-          <button onClick={() => dispatch(actions.createNewNode())}>add</button>
-        </div>
-        <SearchPanel state={state} dispatch={dispatch} />
+        <Sidebar items={state.items} />
+        <Gallery
+          items={state.items[state.itemFocused].children.map(
+            (id) => state.items[id]
+          )}
+        />
       </div>
       {state.videoIdBeingPlayed && (
         <Player videoId={state.videoIdBeingPlayed} />

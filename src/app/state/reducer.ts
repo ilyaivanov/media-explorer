@@ -84,6 +84,11 @@ export const reducer = (state: RootState, action: RootAction): RootState => {
       ...state,
       itemBeingDraggedId: action.itemId,
     };
+  } else if (action.type === "FOCUS_ON_ITEM") {
+    return {
+      ...state,
+      itemFocused: action.itemId,
+    };
   } else if (action.type === "UPDATE_MOUSE_COORDINATES") {
     return {
       ...state,

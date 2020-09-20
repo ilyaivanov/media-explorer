@@ -47,6 +47,11 @@ export const startDraggingItem = (itemId: string) =>
     itemId,
     type: "START_DRAGGING_ITEM",
   } as const);
+export const focusItem = (itemId: string) =>
+    ({
+        itemId,
+        type: "FOCUS_ON_ITEM",
+    } as const);
 
 export const updateMouseCoordinatesDuringDrag = (x: number, y: number) =>
   ({
