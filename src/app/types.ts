@@ -6,10 +6,8 @@ export type RootState = {
   itemFocused: string;
   searchTerm: string;
   options: UIOptions;
-  itemBeingDraggedId?: string;
-  x: number;
-  y: number;
   dropDestinationPlaceholder?: DropDestinationPlaceholder;
+  dragState: DragState;
 };
 
 export interface Item {
@@ -27,11 +25,11 @@ export interface DropDestinationPlaceholder {
   targetLevel: number;
 }
 
-interface NotPressed {
+export interface NotPressed {
   type: "not_pressed";
 }
 
-interface ItemPressed {
+export interface ItemPressed {
   type: "item_pressed";
   itemId: string;
   distance: number;
@@ -39,7 +37,7 @@ interface ItemPressed {
   itemOffsetY: number;
 }
 
-interface ItemBeingDragged {
+export interface ItemBeingDragged {
   type: "item_being_dragged";
   itemId: string;
   x: number;
@@ -48,8 +46,7 @@ interface ItemBeingDragged {
   itemOffsetY: number;
 }
 
-type DragState = NotPressed | ItemPressed | ItemBeingDragged;
-
+export type DragState = NotPressed | ItemPressed | ItemBeingDragged;
 
 export type NodesContainer = {
   [key: string]: Item;
@@ -67,9 +64,13 @@ export type RootAction =
   | ReturnType<typeof actions.renameItem>
   | ReturnType<typeof actions.setNodeChildren>
   | ReturnType<typeof actions.focusItem>
+  | ReturnType<typeof actions.mouseDownOnItem>
+  | ReturnType<typeof actions.mouseMove>
+  | ReturnType<typeof actions.mouseUp>
   | ReturnType<typeof actions.startDraggingItem>
-  | ReturnType<typeof actions.updateMouseCoordinatesDuringDrag>
+  | ReturnType<typeof actions.removeSidebarDropIndicator>
   | ReturnType<typeof actions.dropItem>
+  | ReturnType<typeof actions.replaceCard>
   | ReturnType<typeof actions.setDropPosition>
   | ReturnType<typeof actions.toggleSearchVisibility>
   | ReturnType<typeof actions.removeItem>;

@@ -1,3 +1,4 @@
+
 body {
   margin: 0;
   font-family: Roboto;
@@ -35,6 +36,9 @@ body {
 .row:hover {
   background-color: #43585b;
 }
+.page-during-drag .row:hover {
+  background-color: transparent;
+}
 
 .circle {
   margin-left: 5px;
@@ -50,8 +54,8 @@ body {
   transition: all 200ms;
   cursor: pointer;
   border-radius: 10px;
-  width: 20px;
-  height: 20px;
+  width: var(--chevron-width);
+  height: var(--chevron-width);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -89,17 +93,43 @@ body {
   background-color: #e9e9e9;
 }
 
+.card-wrapper {
+  margin-left: 15px;
+  margin-top: 15px;
+}
+
 .card {
   border-radius: 6px;
   background-color: #232325;
   color: white;
   font-size: 14px;
   width: 170px;
-  margin-left: 10px;
-  margin-top: 10px;
+
   overflow: hidden;
-  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
-    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+  box-shadow: 2px 2px 4px black;
+  transition: box-shadow 200ms;
+}
+.mini-card {
+  width: 36px;
+  height: 36px;
+}
+.mini-card img {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+}
+.mini-card .card-text {
+  display: none;
+}
+.card-being-dragged {
+  opacity: 0.3;
+}
+.card:hover {
+  box-shadow: 2px 2px 8px black;
+}
+/*ignore shadow effects during drag*/
+.page-during-drag .card:hover {
+  box-shadow: 2px 2px 4px black;
 }
 .card-text {
   width: 100%;

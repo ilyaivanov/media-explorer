@@ -42,27 +42,50 @@ export const toggleSearchVisibility = () =>
     type: "TOGGLE_SEARCH_VISIBILITY",
   } as const);
 
+export const mouseDownOnItem = (itemId: string, offset: Point) =>
+  ({
+    itemId,
+    offset,
+    type: "MOUSE_DOWN_ON_ITEM",
+  } as const);
+
+export const mouseMove = (mousePosition: Point, mouseMovement: Point) =>
+  ({
+    mousePosition,
+    mouseMovement,
+    type: "MOUSE_MOVE",
+  } as const);
+
+export const mouseUp = () =>
+  ({
+    type: "MOUSE_UP",
+  } as const);
+export const removeSidebarDropIndicator = () =>
+  ({
+    type: "REMOVE_SIDEBAR_DROP_INDICATOR",
+  } as const);
+
 export const startDraggingItem = (itemId: string) =>
   ({
     itemId,
     type: "START_DRAGGING_ITEM",
   } as const);
 export const focusItem = (itemId: string) =>
-    ({
-        itemId,
-        type: "FOCUS_ON_ITEM",
-    } as const);
-
-export const updateMouseCoordinatesDuringDrag = (x: number, y: number) =>
   ({
-    x,
-    y,
-    type: "UPDATE_MOUSE_COORDINATES",
+    itemId,
+    type: "FOCUS_ON_ITEM",
   } as const);
 
-export const dropItem = () =>
+export const dropItem = (dropPosition?: DropDestinationPlaceholder) =>
   ({
+    dropPosition,
     type: "DROP_ITEM",
+  } as const);
+
+export const replaceCard = (itemIdToReplaceInPosition: string) =>
+  ({
+    itemIdToReplaceInPosition,
+    type: "REPLACE_CARD",
   } as const);
 
 export const setDropPosition = (dropPosition: DropDestinationPlaceholder) =>
@@ -82,3 +105,8 @@ export const createNewNode = () =>
     parentId: "HOME",
     type: "APPEND_NODE",
   } as const);
+
+type Point = {
+  x: number;
+  y: number;
+};

@@ -3488,7 +3488,8 @@ items1["HOME"] = {
   title: "Home",
   children: itemsArray.map((i) => i.id),
 };
-
+// @ts-ignore
+window.items = items1;
 export const initialState: RootState = {
   items: items1,
   videoIdBeingPlayed: undefined,
@@ -3496,8 +3497,9 @@ export const initialState: RootState = {
   options: {
     isSearchVisible: true,
   },
-  x: 0,
-  y: 0,
-  itemBeingDraggedId: undefined,
+  dropDestinationPlaceholder: undefined,
   itemFocused: "HOME",
+  dragState: {
+    type: "not_pressed",
+  },
 };

@@ -15,7 +15,7 @@
 /*  height: calc(100vh - 50px);*/
 /*}*/
 
-/*.page-during-drag {*/
-/*  user-select: none;*/
-/*  cursor: grabbing;*/
-/*}*/
+.page-during-drag {
+  user-select: none;
+  cursor: grabbing;
+}

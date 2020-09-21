@@ -1,33 +1,30 @@
 import React from "react";
 import { DropDestinationPlaceholder } from "./types";
-
+import * as cs from "./constants";
 interface Props {
   dropDestinationPlaceholder?: DropDestinationPlaceholder;
 }
 
 export const DropDestinationLine = ({ dropDestinationPlaceholder }: Props) => {
   if (!dropDestinationPlaceholder) return null;
-
+  const { rect, dropDestination, targetLevel } = dropDestinationPlaceholder;
+  const desiredTargetLevel =
+    dropDestination === "inside" ? targetLevel + 1 : targetLevel;
+  const left =
+    cs.chevronWidth + desiredTargetLevel * cs.levelOffsetForMenu + rect.left;
   return (
     <div
       style={{
         position: "absolute",
+        pointerEvents: "none",
         top:
-          dropDestinationPlaceholder.rect.top -
-          5 +
-          (dropDestinationPlaceholder.dropDestination === "before" ? 0 : 50),
-        left:
-          40 +
-          dropDestinationPlaceholder.rect.left +
-          dropDestinationPlaceholder.targetLevel * 20 +
-          (dropDestinationPlaceholder.dropDestination === "inside" ? 20 : 0),
-        height: 2,
+          rect.top -
+          cs.dropDestinationLineHeight / 2 +
+          (dropDestination === "before" ? 0 : rect.height),
+        left,
+        height: cs.dropDestinationLineHeight,
         backgroundColor: "lightblue",
-        width:
-          dropDestinationPlaceholder.rect.width -
-          40 -
-          dropDestinationPlaceholder.targetLevel * 20 -
-          (dropDestinationPlaceholder.dropDestination === "inside" ? 20 : 0),
+        width: rect.width - left - cs.chevronWidth,
       }}
     />
   );

@@ -1,30 +1,83 @@
 import React from "react";
-import { Item } from "../types";
+import { DragState, Item } from "../types";
 import playlist from "./playlist.png";
 import { cn } from "../classNames";
+import { dispatch } from "../globalDispatch";
+import * as actions from "../state/actions";
 
-const Gallery = ({ items }: { items: Item[] }) => (
-  <div className={"gallery"}>
+interface Props {
+  items: Item[];
+  dragState: DragState;
+}
+const Gallery = ({ items, dragState }: Props) => (
+  <div
+    className={"gallery"}
+    onMouseMove={() => {
+      if (dragState && dragState.type === "item_being_dragged") {
+        dispatch(actions.removeSidebarDropIndicator());
+      }
+    }}
+  >
     {items.map((item) => (
-      <Card item={item} key={item.id} />
+      <div key={item.id} className="card-wrapper">
+        <Card dragState={dragState} item={item} />
+      </div>
     ))}
   </div>
 );
 
-const Card = ({ item }: { item: Item }) => (
-  <div className="card">
-    <img
-      className={cn({ "playlist-image": !item.videoId })}
-      width={!item.videoId  ? undefined : 170}
-      height={96}
-      src={
-        item.videoId
-          ? `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`
-          : playlist
-      }
-      alt=""
-    />
-    <div className="card-text">{item.title}</div>
-  </div>
-);
+export const Card = ({
+  item,
+  dragState,
+  isMini,
+}: {
+  item: Item;
+  isMini?: boolean;
+  dragState?: DragState;
+}) => {
+  const isCurrentItemBeingDragged =
+    dragState?.type === "item_being_dragged" && dragState.itemId === item.id;
+  return (
+    <div
+      className={cn({
+        card: true,
+        "card-being-dragged": isCurrentItemBeingDragged,
+        "mini-card": isMini,
+      })}
+      onMouseMove={(e) => {
+        if (
+          dragState &&
+          dragState.type === "item_being_dragged" &&
+          dragState.itemId !== item.id
+        ) {
+          dispatch(actions.replaceCard(item.id));
+        }
+      }}
+      onMouseDown={(e) => {
+        var rect = e.currentTarget.getBoundingClientRect();
+
+        dispatch(
+          actions.mouseDownOnItem(item.id, {
+            x: e.clientX - rect.x,
+            y: e.clientY - rect.y,
+          })
+        );
+      }}
+    >
+      <img
+        className={cn({ "playlist-image": !item.videoId })}
+        width={!item.videoId ? undefined : 170}
+        draggable={false}
+        height={96}
+        src={
+          item.videoId
+            ? `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`
+            : playlist
+        }
+        alt=""
+      />
+      <div className="card-text">{item.title}</div>
+    </div>
+  );
+};
 export default Gallery;

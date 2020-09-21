@@ -1,41 +1,55 @@
-import React from "react";
-
+import React, { useEffect } from "react";
+import { DragState, NodesContainer } from "./types";
+import { dispatch } from "./globalDispatch";
+import * as actions from "./state/actions";
+import { Card } from "./newApp/Gallery";
 interface Props {
-  x: number;
-  y: number;
-  text: string;
-  videoId: string;
+  items: NodesContainer;
+  dragState: DragState;
 }
 
-export const ItemBeingDraggedAvatar = ({ x, y, text, videoId }: Props) => {
-  return (
-    <div
-      style={{
-        position: "fixed",
-        top: y - 15,
-        left: x - 15,
-        pointerEvents: "none",
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
+export const ItemBeingDraggedAvatar = ({ dragState, items }: Props) => {
+  const onMouseMoveDuringDrag = (e: MouseEvent) => {
+    dispatch(
+      actions.mouseMove(
+        { x: e.clientX, y: e.clientY },
+        {
+          x: e.movementX,
+          y: e.movementY,
+        }
+      )
+    );
+  };
+  const onMouseUpDuringDrag = () => {
+    dispatch(actions.mouseUp());
+  };
+  useEffect(() => {
+    if (dragState.type !== "not_pressed") {
+      document.addEventListener("mousemove", onMouseMoveDuringDrag);
+      document.addEventListener("mouseup", onMouseUpDuringDrag);
+    }
+    return () => {
+      document.removeEventListener("mousemove", onMouseMoveDuringDrag);
+      document.removeEventListener("mouseup", onMouseUpDuringDrag);
+    };
+  }, [dragState]);
+  if (dragState.type === "item_being_dragged") {
+    const isOnSidebar = dragState.x < 300;
+    const leftOffset = isOnSidebar ? 18 : dragState.itemOffsetX;
+    const topOffset = isOnSidebar ? 18 : dragState.itemOffsetY;
+    return (
       <div
         style={{
-          backgroundColor: "lightblue",
-          width: 30,
-          height: 30,
-          borderRadius: 30,
+          position: "fixed",
+          top: dragState.y - topOffset,
+          left: dragState.x - leftOffset,
+          pointerEvents: "none",
+          display: "flex",
+          alignItems: "center",
         }}
       >
-        {videoId && (
-          <img
-            style={{ width: 30, height: 30, borderRadius: 30 }}
-            src={`https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`}
-            alt="1"
-          />
-        )}
+        <Card isMini={isOnSidebar} item={items[dragState.itemId]} />
       </div>
-      <span style={{ fontSize: 12, marginLeft: 5, width: 300 }}>{text}</span>
-    </div>
-  );
+    );
+  } else return null;
 };

@@ -1,23 +1,23 @@
-import {
-  Item,
-  RootState,
-  RootAction,
-  NodesContainer,
-  DropDestinationPlaceholder,
-} from "../types";
+import { Item, NodesContainer, RootAction, RootState } from "../types";
 
-const assignItem = (
+const assignItemsInState = (
   state: RootState,
   itemId: string,
   mapper: (item: Item) => Partial<Item>
 ) => ({
   ...state,
-  items: {
-    ...state.items,
-    [itemId]: {
-      ...state.items[itemId],
-      ...mapper(state.items[itemId]),
-    },
+  items: assignItem(state.items, itemId, mapper),
+});
+
+const assignItem = (
+  items: NodesContainer,
+  itemId: string,
+  mapper: (item: Item) => Partial<Item>
+) => ({
+  ...items,
+  [itemId]: {
+    ...items[itemId],
+    ...mapper(items[itemId]),
   },
 });
 
@@ -28,12 +28,16 @@ const findParentId = (items: NodesContainer, childId: string) =>
 
 export const reducer = (state: RootState, action: RootAction): RootState => {
   if (action.type === "TOGGLE_ITEM") {
-    return assignItem(state, action.itemId, (i) => ({ isOpen: !i.isOpen }));
+    return assignItemsInState(state, action.itemId, (i) => ({
+      isOpen: !i.isOpen,
+    }));
   } else if (action.type === "RENAME_ITEM") {
-    return assignItem(state, action.itemId, () => ({ title: action.newName }));
+    return assignItemsInState(state, action.itemId, () => ({
+      title: action.newName,
+    }));
   } else if (action.type === "REMOVE_ITEM") {
     const nodeOverParentId = findParentId(state.items, action.itemId);
-    return assignItem(state, nodeOverParentId, (i) => ({
+    return assignItemsInState(state, nodeOverParentId, (i) => ({
       children: i.children.filter((child) => child !== action.itemId),
     }));
   } else if (action.type === "APPEND_NODE") {
@@ -44,7 +48,7 @@ export const reducer = (state: RootState, action: RootAction): RootState => {
         [action.node.id]: action.node,
       },
     };
-    return assignItem(withNewNode, action.parentId, (i) => ({
+    return assignItemsInState(withNewNode, action.parentId, (i) => ({
       children: i.children.concat([action.node.id]),
     }));
   } else if (action.type === "PLAY_ITEM") {
@@ -68,7 +72,7 @@ export const reducer = (state: RootState, action: RootAction): RootState => {
     action.items.forEach((i) => {
       copy.items[i.id] = i;
     });
-    return assignItem(copy, "SEARCH", () => ({
+    return assignItemsInState(copy, "SEARCH", () => ({
       children: action.items.map((i) => i.id),
     }));
   } else if (action.type === "TOGGLE_SEARCH_VISIBILITY") {
@@ -79,39 +83,100 @@ export const reducer = (state: RootState, action: RootAction): RootState => {
         isSearchVisible: !state.options.isSearchVisible,
       },
     };
-  } else if (action.type === "START_DRAGGING_ITEM") {
+  } else if (action.type === "MOUSE_DOWN_ON_ITEM") {
     return {
       ...state,
-      itemBeingDraggedId: action.itemId,
+      dragState: {
+        type: "item_pressed",
+        distance: 0,
+        itemId: action.itemId,
+        itemOffsetX: action.offset.x,
+        itemOffsetY: action.offset.y,
+      },
+    };
+  } else if (action.type === "MOUSE_MOVE") {
+    if (state.dragState.type === "item_pressed") {
+      const { x, y } = action.mouseMovement;
+      const newDistance = state.dragState.distance + Math.sqrt(x * x + y * y);
+      if (newDistance > 4)
+        return {
+          ...state,
+          dragState: {
+            ...state.dragState,
+            type: "item_being_dragged",
+            x: action.mousePosition.x,
+            y: action.mousePosition.y,
+          },
+        };
+      else
+        return {
+          ...state,
+          dragState: {
+            ...state.dragState,
+            distance: newDistance,
+          },
+        };
+    } else if (state.dragState.type === "item_being_dragged") {
+      return {
+        ...state,
+        dragState: {
+          ...state.dragState,
+          x: action.mousePosition.x,
+          y: action.mousePosition.y,
+        },
+      };
+    }
+  } else if (action.type === "MOUSE_UP") {
+    if (state.dropDestinationPlaceholder) {
+      const destination = state.dropDestinationPlaceholder;
+      if (!destination || state.dragState.type !== "item_being_dragged")
+        return state;
+      const itemBeingDraggedId = state.dragState.itemId;
+
+      return {
+        ...state,
+        items: drop(
+          state.items,
+          itemBeingDraggedId,
+          destination.itemId,
+          destination.dropDestination
+        ),
+        dropDestinationPlaceholder: undefined,
+        dragState: {
+          type: "not_pressed",
+        },
+      };
+    }
+    return {
+      ...state,
+      dragState: {
+        type: "not_pressed",
+      },
     };
   } else if (action.type === "FOCUS_ON_ITEM") {
     return {
       ...state,
       itemFocused: action.itemId,
     };
-  } else if (action.type === "UPDATE_MOUSE_COORDINATES") {
+  } else if (action.type === "REMOVE_SIDEBAR_DROP_INDICATOR") {
     return {
       ...state,
-      x: action.x,
-      y: action.y,
+      dropDestinationPlaceholder: undefined,
     };
   } else if (action.type === "DROP_ITEM") {
-    if (!state.itemBeingDraggedId || !state.dropDestinationPlaceholder)
+    const destination = action.dropPosition;
+    if (!destination || state.dragState.type !== "item_being_dragged")
       return state;
-    const parentId = findParentId(state.items, state.itemBeingDraggedId || "");
-    const newState = assignItem(state, parentId, (i) => ({
-      children: i.children.filter(
-        (child) => child !== state.itemBeingDraggedId
-      ),
-    }));
+    const itemBeingDraggedId = state.dragState.itemId;
+
     return {
-      ...newState,
+      ...state,
       items: drop(
-        newState.items,
-        state.itemBeingDraggedId,
-        state.dropDestinationPlaceholder
+        state.items,
+        itemBeingDraggedId,
+        destination.itemId,
+        destination.dropDestination
       ),
-      itemBeingDraggedId: undefined,
       dropDestinationPlaceholder: undefined,
     };
   } else if (action.type === "SET_DROP_POSITION") {
@@ -119,42 +184,81 @@ export const reducer = (state: RootState, action: RootAction): RootState => {
       ...state,
       dropDestinationPlaceholder: action.dropPosition,
     };
+  } else if (action.type === "REPLACE_CARD") {
+    if (state.dragState.type === "item_being_dragged") {
+      const itemBeingDragged = state.dragState.itemId;
+      const itemToReplace = action.itemIdToReplaceInPosition;
+      return {
+        ...state,
+        items: setItemOnPlaceOf(state.items, itemBeingDragged, itemToReplace),
+      };
+    }
   }
   return state;
 };
 
-export const drop = (
+const drop = (
   items: NodesContainer,
   itemBeingDragged: string,
-  dropDescription: DropDestinationPlaceholder
+  itemToDropAround: string,
+  howToDrop: "before" | "after" | "inside"
 ): NodesContainer => {
-  if (dropDescription.dropDestination === "inside") {
+  const parentId = findParentId(items, itemBeingDragged || "");
+  const copyItems = assignItem(items, parentId, (i) => ({
+    children: i.children.filter((child) => child !== itemBeingDragged),
+  }));
+  if (howToDrop === "inside") {
     let targetIndex = 0;
 
-    const newChildren = [...items[dropDescription.itemId].children];
+    const newChildren = [...copyItems[itemToDropAround].children];
     newChildren.splice(targetIndex, 0, itemBeingDragged);
-    items[dropDescription.itemId] = {
-      ...items[dropDescription.itemId],
+    copyItems[itemToDropAround] = {
+      ...copyItems[itemToDropAround],
       children: newChildren,
     };
   } else {
-    const nodeUnderParentId = findParentId(items, dropDescription.itemId);
+    const nodeUnderParentId = findParentId(copyItems, itemToDropAround);
 
-    let targetIndex = items[nodeUnderParentId].children.indexOf(
-      dropDescription.itemId
+    let targetIndex = copyItems[nodeUnderParentId].children.indexOf(
+      itemToDropAround
     );
 
-    if (dropDescription.dropDestination === "after") {
+    if (howToDrop === "after") {
       targetIndex += 1;
     }
 
-    const newChildren = [...items[nodeUnderParentId].children];
+    const newChildren = [...copyItems[nodeUnderParentId].children];
     newChildren.splice(targetIndex, 0, itemBeingDragged);
-    items[nodeUnderParentId] = {
-      ...items[nodeUnderParentId],
+    copyItems[nodeUnderParentId] = {
+      ...copyItems[nodeUnderParentId],
       children: newChildren,
     };
   }
 
-  return items;
+  return copyItems;
+};
+
+//assumes parent is the same
+const setItemOnPlaceOf = (
+  items: NodesContainer,
+  itemBeingDragged: string,
+  itemToReplace: string
+): NodesContainer => {
+  const parentId = findParentId(items, itemBeingDragged || "");
+  const parentChildren = items[parentId].children;
+  const parentChildrenWithoutItemBeingDragged = parentChildren.filter(
+    (id) => id !== itemBeingDragged
+  );
+
+  const targetIndex = parentChildren.indexOf(itemToReplace);
+
+  parentChildrenWithoutItemBeingDragged.splice(
+    targetIndex,
+    0,
+    itemBeingDragged
+  );
+
+  return assignItem(items, parentId, () => ({
+    children: parentChildrenWithoutItemBeingDragged,
+  }));
 };
