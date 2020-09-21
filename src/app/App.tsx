@@ -1,19 +1,18 @@
 import React from "react";
 import "./App.css";
 import "./constants.css";
-import { reducer } from "./state/reducer";
 import { Player } from "./Player";
-import { initialState } from "./state/initialState";
 import { ItemBeingDraggedAvatar } from "./ItemBeingDraggedAvatar";
 import { DropDestinationLine } from "./DropDestinationIndicator";
-import { setDispatch } from "./globalDispatch";
+import { useStoreWithGlobalDispatch } from "./globalDispatch";
 import { Sidebar } from "./newApp";
 import Gallery from "./newApp/Gallery";
 import { cn } from "./classNames";
+import Menu from "./Menu";
+import SearchResults from "./SearchResults";
 
 const App = () => {
-  const [state, dispatch] = React.useReducer(reducer, initialState);
-  setDispatch(dispatch);
+  const state = useStoreWithGlobalDispatch();
   return (
     <div>
       <div
@@ -29,9 +28,14 @@ const App = () => {
             (id) => state.items[id]
           )}
         />
+        <SearchResults
+          items={state.items["SEARCH"].children.map((id) => state.items[id])}
+          dragState={state.dragState}
+        />
+        <Menu options={state.options} />
       </div>
-      {state.videoIdBeingPlayed && (
-        <Player videoId={state.videoIdBeingPlayed} />
+      {state.itemIdBeingPlayed && (
+        <Player videoId={state.items[state.itemIdBeingPlayed].videoId} />
       )}
       <ItemBeingDraggedAvatar items={state.items} dragState={state.dragState} />
       <DropDestinationLine

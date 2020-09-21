@@ -77,6 +77,14 @@ export const Card = ({
         alt=""
       />
       <div className="card-text">{item.title}</div>
+      {item.videoId && (
+        <button
+          className="play-button"
+          onClick={() => dispatch(actions.playItem(item))}
+        >
+          play
+        </button>
+      )}
     </div>
   );
 };

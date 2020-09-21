@@ -54,8 +54,20 @@ export const reducer = (state: RootState, action: RootAction): RootState => {
   } else if (action.type === "PLAY_ITEM") {
     return {
       ...state,
-      videoIdBeingPlayed: action.item.videoId,
+      itemIdBeingPlayed: action.item.id,
     };
+  } else if (action.type === "PLAY_NEXT_TRACK") {
+    if (state.itemIdBeingPlayed) {
+      const parentItems =
+        state.items[findParentId(state.items, state.itemIdBeingPlayed)]
+          .children;
+      const nextIndex = parentItems.indexOf(state.itemIdBeingPlayed) + 1;
+      if (nextIndex < parentItems.length)
+        return {
+          ...state,
+          itemIdBeingPlayed: parentItems[nextIndex],
+        };
+    }
   } else if (action.type === "SET_SEARCH_TERM") {
     return {
       ...state,
@@ -72,7 +84,7 @@ export const reducer = (state: RootState, action: RootAction): RootState => {
     action.items.forEach((i) => {
       copy.items[i.id] = i;
     });
-    return assignItemsInState(copy, "SEARCH", () => ({
+    return assignItemsInState(copy, action.nodeId, () => ({
       children: action.items.map((i) => i.id),
     }));
   } else if (action.type === "TOGGLE_SEARCH_VISIBILITY") {
@@ -163,6 +175,8 @@ export const reducer = (state: RootState, action: RootAction): RootState => {
       ...state,
       dropDestinationPlaceholder: undefined,
     };
+  } else if (action.type === "SET_ROOT_STATE") {
+    return action.state;
   } else if (action.type === "DROP_ITEM") {
     const destination = action.dropPosition;
     if (!destination || state.dragState.type !== "item_being_dragged")
@@ -238,27 +252,21 @@ const drop = (
   return copyItems;
 };
 
-//assumes parent is the same
 const setItemOnPlaceOf = (
   items: NodesContainer,
   itemBeingDragged: string,
   itemToReplace: string
 ): NodesContainer => {
-  const parentId = findParentId(items, itemBeingDragged || "");
-  const parentChildren = items[parentId].children;
-  const parentChildrenWithoutItemBeingDragged = parentChildren.filter(
-    (id) => id !== itemBeingDragged
-  );
+  const parentOfItemBeingDragged = findParentId(items, itemBeingDragged || "");
+  const parentTargetItemId = findParentId(items, itemToReplace || "");
 
-  const targetIndex = parentChildren.indexOf(itemToReplace);
-
-  parentChildrenWithoutItemBeingDragged.splice(
-    targetIndex,
-    0,
-    itemBeingDragged
-  );
-
-  return assignItem(items, parentId, () => ({
-    children: parentChildrenWithoutItemBeingDragged,
-  }));
+  if (parentOfItemBeingDragged === parentTargetItemId) {
+    const parentChildren = items[parentOfItemBeingDragged].children;
+    const targetIndex = parentChildren.indexOf(itemToReplace);
+    const currentIndex = parentChildren.indexOf(itemBeingDragged);
+    const dropDestination = targetIndex < currentIndex ? "before" : "after";
+    return drop(items, itemBeingDragged, itemToReplace, dropDestination);
+  } else {
+    return drop(items, itemBeingDragged, itemToReplace, "before");
+  }
 };

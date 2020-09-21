@@ -2,7 +2,7 @@ import * as actions from "./state/actions";
 
 export type RootState = {
   items: NodesContainer;
-  videoIdBeingPlayed: string | undefined;
+  itemIdBeingPlayed: string | undefined;
   itemFocused: string;
   searchTerm: string;
   options: UIOptions;
@@ -60,6 +60,7 @@ export type RootAction =
   | ReturnType<typeof actions.toggleIsItemOpen>
   | ReturnType<typeof actions.createNewNode>
   | ReturnType<typeof actions.playItem>
+  | ReturnType<typeof actions.playNextTrack>
   | ReturnType<typeof actions.setSearchTerm>
   | ReturnType<typeof actions.renameItem>
   | ReturnType<typeof actions.setNodeChildren>
@@ -73,6 +74,7 @@ export type RootAction =
   | ReturnType<typeof actions.replaceCard>
   | ReturnType<typeof actions.setDropPosition>
   | ReturnType<typeof actions.toggleSearchVisibility>
+  | ReturnType<typeof actions.setRootState>
   | ReturnType<typeof actions.removeItem>;
 
 export type RootDispatch = (action: RootAction) => void;

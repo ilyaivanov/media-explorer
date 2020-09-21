@@ -3488,11 +3488,16 @@ items1["HOME"] = {
   title: "Home",
   children: itemsArray.map((i) => i.id),
 };
+items1["SEARCH"] = {
+  id: "SEARCH",
+  title: "SEARCH",
+  children: [],
+};
 // @ts-ignore
 window.items = items1;
 export const initialState: RootState = {
   items: items1,
-  videoIdBeingPlayed: undefined,
+  itemIdBeingPlayed: undefined,
   searchTerm: "",
   options: {
     isSearchVisible: true,

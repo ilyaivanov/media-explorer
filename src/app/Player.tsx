@@ -1,10 +1,18 @@
 import React from "react";
 import YouTube from "react-youtube";
 import "./Player.css";
-export const Player = ({ videoId }: { videoId: string }) => {
+import { dispatch } from "./globalDispatch";
+import * as actions from "./state/actions";
+export const Player = ({ videoId }: { videoId?: string }) => {
   return (
     <div className="player">
-      <YouTube videoId={videoId} opts={playerOpts} />
+      <YouTube
+        videoId={videoId}
+        opts={playerOpts}
+        onEnd={() => {
+          dispatch(actions.playNextTrack());
+        }}
+      />
     </div>
   );
 };

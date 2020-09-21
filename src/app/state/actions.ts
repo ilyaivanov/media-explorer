@@ -1,4 +1,4 @@
-import { DropDestinationPlaceholder, Item } from "../types";
+import { DropDestinationPlaceholder, Item, RootState } from "../types";
 
 export const toggleIsItemOpen = (item: Item) =>
   ({
@@ -28,6 +28,7 @@ export const setSearchTerm = (term: string) =>
 export const setNodeChildren = (nodeId: string, items: Item[]) =>
   ({
     items,
+    nodeId,
     type: "SET_NODE_CHILDREN",
   } as const);
 
@@ -92,6 +93,15 @@ export const setDropPosition = (dropPosition: DropDestinationPlaceholder) =>
   ({
     dropPosition,
     type: "SET_DROP_POSITION",
+  } as const);
+export const setRootState = (state: RootState) =>
+  ({
+    state,
+    type: "SET_ROOT_STATE",
+  } as const);
+export const playNextTrack = () =>
+  ({
+    type: "PLAY_NEXT_TRACK",
   } as const);
 
 export const createNewNode = () =>
