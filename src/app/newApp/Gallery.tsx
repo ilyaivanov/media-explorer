@@ -10,20 +10,13 @@ interface Props {
   dragState: DragState;
 }
 const Gallery = ({ items, dragState }: Props) => (
-  <div
-    className={"gallery"}
-    onMouseMove={() => {
-      if (dragState && dragState.type === "item_being_dragged") {
-        dispatch(actions.removeSidebarDropIndicator());
-      }
-    }}
-  >
+  <>
     {items.map((item) => (
       <div key={item.id} className="card-wrapper">
         <Card dragState={dragState} item={item} />
       </div>
     ))}
-  </div>
+  </>
 );
 
 export const Card = ({
