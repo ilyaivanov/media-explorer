@@ -43,4 +43,4 @@ export const traverseOpenFolders = (
 export const hasAnySubfolders = (items: NodesContainer, itemId: string) =>
   items[itemId].children
     .map((id) => !items[id].videoId)
-    .reduce((acc, val) => acc && val, true);
+    .reduce((acc, val) => acc || val, false);
