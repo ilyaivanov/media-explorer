@@ -4,9 +4,9 @@ import "./constants.css";
 import { Player } from "./Player";
 import { ItemBeingDraggedAvatar } from "./ItemBeingDraggedAvatar";
 import { DropDestinationLine } from "./DropDestinationIndicator";
-import {dispatch, useStoreWithGlobalDispatch} from "./globalDispatch";
-import { Sidebar } from "./newApp";
-import Gallery from "./newApp/Gallery";
+import { dispatch, useStoreWithGlobalDispatch } from "./globalDispatch";
+import { Sidebar } from "./Sidebar";
+import  Card  from "./Card";
 import { cn } from "./classNames";
 import Menu from "./Menu";
 import SearchResults from "./SearchResults";
@@ -29,17 +29,17 @@ const App = () => {
             "gallery-without-search": !state.options.isSearchVisible,
           })}
           onMouseMove={() => {
-              if (state.dragState && state.dragState.type === "item_being_dragged") {
-                  dispatch(actions.removeSidebarDropIndicator());
-              }
+            if (
+              state.dragState &&
+              state.dragState.type === "item_being_dragged"
+            ) {
+              dispatch(actions.removeSidebarDropIndicator());
+            }
           }}
         >
-          <Gallery
-            dragState={state.dragState}
-            items={state.items[state.itemFocused].children.map(
-              (id) => state.items[id]
-            )}
-          />
+          {state.items[state.itemFocused].children.map((id) => (
+            <Card key={id} dragState={state.dragState} item={state.items[id]} />
+          ))}
         </div>
 
         {state.options.isSearchVisible && (

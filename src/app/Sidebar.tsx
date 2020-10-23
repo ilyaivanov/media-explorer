@@ -1,12 +1,11 @@
 import React from "react";
-import "./index.css";
-import { DragState, Item, NodesContainer } from "../types";
-import { hasAnySubfolders, traverseOpenFolders } from "../state/selectors";
-import { dispatch } from "../globalDispatch";
-import * as actions from "../state/actions";
-import { cn } from "../classNames";
-import * as cs from "../constants";
-
+import { DragState, Item, NodesContainer } from "./types";
+import { hasAnySubfolders, traverseOpenFolders } from "./state/selectors";
+import { dispatch } from "./globalDispatch";
+import * as actions from "./state/actions";
+import { cn } from "./classNames";
+import * as cs from "./constants";
+import './Sidebar.css'
 interface Props {
   items: NodesContainer;
   dragState: DragState;

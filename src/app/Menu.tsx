@@ -9,7 +9,7 @@ interface Props {
 }
 
 const Menu = React.memo(({ options }: Props) => (
-  <div className="menu" style={{ height: 50 }}>
+  <div className="menu" >
     search:
     <button onClick={() => dispatch(actions.toggleSearchVisibility())}>
       {options.isSearchVisible ? "hide" : "show"}

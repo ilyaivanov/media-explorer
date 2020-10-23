@@ -19,3 +19,52 @@
   user-select: none;
   cursor: grabbing;
 }
+
+body {
+  margin: 0;
+  font-family: Roboto;
+}
+
+.page {
+  display: flex;
+  justify-content: stretch;
+  height: 100vh;
+  width: 100vw;
+}
+
+.sidebar {
+  width: 300px;
+  min-width: 300px;
+  background-color: #232325;
+  overflow-y: auto;
+}
+
+.gallery {
+  margin-top: var(--menu-height);
+  width: calc(100vw - var(--sidebar-menu-width) - var(--search-menu-width));
+  overflow-y: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  background-color: #e9e9e9;
+}
+/*Use a better solution, this sucks mule's balls*/
+.gallery-without-search{
+  width: calc(100vw - var(--sidebar-menu-width));
+}
+
+.menu {
+  height: 50px;
+  background-color: #43585b;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 300px;
+}
+
+.search-results {
+  margin-top: var(--menu-height);
+  width: var(--search-menu-width);
+  overflow-y: auto;
+}

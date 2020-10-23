@@ -1,0 +1,56 @@
+
+.card {
+    margin-left: 15px;
+    margin-top: 15px;
+    border-radius: 6px;
+    background-color: #232325;
+    color: white;
+    font-size: 14px;
+    width: 170px;
+    position: relative;
+    overflow: hidden;
+    /*box-shadow: 2px 2px 4px black;*/
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.25);
+    transition: box-shadow 200ms;
+}
+.mini-card {
+    width: 36px;
+    height: 36px;
+}
+.mini-card img {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+}
+.mini-card .card-text {
+    display: none;
+}
+.card-being-dragged {
+    opacity: 0.3;
+}
+.card:hover {
+    box-shadow: 2px 2px 8px black;
+}
+.play-button {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+.card:hover .play-button {
+    display: inherit;
+}
+/*ignore shadow effects during drag*/
+.page-during-drag .card:hover {
+    box-shadow: 2px 2px 4px black;
+}
+.card-text {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.playlist-image {
+    filter: invert(92%) sepia(100%) saturate(0%) hue-rotate(202deg)
+    brightness(106%) contrast(106%);
+}

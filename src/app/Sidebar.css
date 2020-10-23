@@ -1,0 +1,68 @@
+
+.sidebar-title {
+    color: #cbcbcb;
+    font-size: 14px;
+    margin-left: 15px;
+    margin-top: 15px;
+    margin-bottom: 25px;
+}
+
+.row {
+    box-sizing: border-box;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    display: flex;
+    align-items: center;
+    color: white;
+    cursor: pointer;
+}
+.row:hover {
+    background-color: #43585b;
+}
+.page-during-drag .row:hover {
+    background-color: transparent;
+}
+
+.circle {
+    margin-left: 5px;
+    margin-right: 10px;
+    width: 6px;
+    height: 6px;
+    border-radius: 6px;
+    background-color: white;
+}
+
+.chevron {
+    opacity: 0;
+    transition: all 200ms;
+    cursor: pointer;
+    border-radius: 10px;
+    width: var(--chevron-width);
+    height: var(--chevron-width);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotateZ(-90deg);
+}
+.chevron.open {
+    transform: rotateZ(0);
+}
+.chevron svg {
+    fill: #cbcbcb;
+}
+.chevron.open svg {
+    fill: white;
+}
+.sidebar:hover .chevron {
+    opacity: 1;
+}
+
+.chevron:hover {
+    background-color: #696969;
+}
+.create-new-playlist {
+    margin-left: 31px;
+    color: white;
+    cursor: pointer;
+}
+

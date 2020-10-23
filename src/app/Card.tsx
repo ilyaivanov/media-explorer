@@ -1,25 +1,12 @@
 import React from "react";
-import { DragState, Item } from "../types";
+import { DragState, Item } from "./types";
 import playlist from "./playlist.png";
-import { cn } from "../classNames";
-import { dispatch } from "../globalDispatch";
-import * as actions from "../state/actions";
+import { cn } from "./classNames";
+import { dispatch } from "./globalDispatch";
+import * as actions from "./state/actions";
+import './Card.css';
 
-interface Props {
-  items: Item[];
-  dragState: DragState;
-}
-const Gallery = ({ items, dragState }: Props) => (
-  <>
-    {items.map((item) => (
-      <div key={item.id} className="card-wrapper">
-        <Card dragState={dragState} item={item} />
-      </div>
-    ))}
-  </>
-);
-
-export const Card = ({
+const Card = ({
   item,
   dragState,
   isMini,
@@ -81,4 +68,5 @@ export const Card = ({
     </div>
   );
 };
-export default Gallery;
+
+export default Card;

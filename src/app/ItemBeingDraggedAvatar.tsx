@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { DragState, NodesContainer } from "./types";
 import { dispatch } from "./globalDispatch";
 import * as actions from "./state/actions";
-import { Card } from "./newApp/Gallery";
+import Card from "./Card";
 interface Props {
   items: NodesContainer;
   dragState: DragState;

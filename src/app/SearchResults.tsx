@@ -1,4 +1,4 @@
-import { Card } from "./newApp/Gallery";
+import Card from "./Card";
 import React, { useEffect } from "react";
 import { DragState, Item } from "./types";
 import _ from "lodash";
