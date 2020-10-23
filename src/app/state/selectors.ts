@@ -29,13 +29,14 @@ export const traverseOpenFolders = (
       if (hasAnySubfolders(items, key))
         return [
           mapper(items[key], level),
-          ...items[key].children.map((i) => mapItem(i, level + 1)),
+          ...items[key].children.filter(i => !items[i].videoId).map((i) => mapItem(i, level + 1)),
         ];
     }
     return mapper(items[key], level);
   };
   if (items[rootKey])
     return items[rootKey].children
+      .filter(i => !items[i].videoId)
       .map((i) => mapItem(i, 0))
       .flat(Number.MAX_VALUE);
 };
