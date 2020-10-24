@@ -4,8 +4,9 @@ import playlist from "./playlist.png";
 import { cn } from "./classNames";
 import { dispatch } from "./globalDispatch";
 import * as actions from "./state/actions";
-import './Card.css';
-
+import "./Card.css";
+import rightArrow from "./icons/right-arrow.png";
+import playIcon from "./icons/play-button.png";
 const Card = ({
   item,
   dragState,
@@ -24,7 +25,7 @@ const Card = ({
         "card-being-dragged": isCurrentItemBeingDragged,
         "mini-card": isMini,
       })}
-      onMouseMove={(e) => {
+      onMouseMove={() => {
         if (
           dragState &&
           dragState.type === "item_being_dragged" &&
@@ -56,14 +57,28 @@ const Card = ({
         }
         alt=""
       />
+
       <div className="card-text">{item.title}</div>
-      {item.videoId && (
-        <button
+      {item.videoId ? (
+        <img
           className="play-button"
+          onMouseDown={(e) => e.stopPropagation()}
           onClick={() => dispatch(actions.playItem(item))}
-        >
-          play
-        </button>
+          src={playIcon}
+          alt=""
+        />
+      ) : (
+        <img
+          className="select-button"
+          onMouseDown={(e) => e.stopPropagation()}
+          onClick={() => {
+            dispatch(actions.focusItem(item.id));
+          }}
+          width={24}
+          height={24}
+          src={rightArrow}
+          alt=""
+        />
       )}
     </div>
   );
