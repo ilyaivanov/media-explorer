@@ -169,6 +169,10 @@ export const reducer = (state: RootState, action: RootAction): RootState => {
     return {
       ...state,
       itemFocused: action.itemId,
+      options: {
+        ...state,
+        isSearchVisible: false,
+      },
     };
   } else if (action.type === "REMOVE_SIDEBAR_DROP_INDICATOR") {
     return {

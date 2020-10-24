@@ -3500,7 +3500,7 @@ export const initialState: RootState = {
   itemIdBeingPlayed: undefined,
   searchTerm: "",
   options: {
-    isSearchVisible: true,
+    isSearchVisible: false,
   },
   dropDestinationPlaceholder: undefined,
   itemFocused: "HOME",

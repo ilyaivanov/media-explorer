@@ -1,20 +1,3 @@
-/*body {*/
-/*  margin: 0;*/
-/*  font-size: 14px;*/
-/*  font-family: "Roboto", "Oxygen",*/
-/*    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",*/
-/*    sans-serif;*/
-/*  -webkit-font-smoothing: antialiased;*/
-/*  -moz-osx-font-smoothing: grayscale;*/
-/*}*/
-/*.page-container {*/
-/*  height: 100vh;*/
-/*}*/
-/*!*THIS DEPENDS UPON MENU HEIGHT*!*/
-/*.page {*/
-/*  height: calc(100vh - 50px);*/
-/*}*/
-
 .page-during-drag {
   user-select: none;
   cursor: grabbing;
@@ -22,7 +5,7 @@
 
 body {
   margin: 0;
-  font-family: Roboto;
+  font-family: Roboto, sans-serif;
 }
 
 .page {
@@ -41,30 +24,11 @@ body {
 
 .gallery {
   margin-top: var(--menu-height);
-  width: calc(100vw - var(--sidebar-menu-width) - var(--search-menu-width));
+  width: calc(100vw - var(--sidebar-menu-width));
   overflow-y: auto;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-content: flex-start;
   background-color: #e9e9e9;
-}
-/*Use a better solution, this sucks mule's balls*/
-.gallery-without-search{
-  width: calc(100vw - var(--sidebar-menu-width));
-}
-
-.menu {
-  height: 50px;
-  background-color: #43585b;
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 300px;
-}
-
-.search-results {
-  margin-top: var(--menu-height);
-  width: var(--search-menu-width);
-  overflow-y: auto;
 }

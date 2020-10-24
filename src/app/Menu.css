@@ -1,0 +1,41 @@
+.menu {
+  box-sizing: border-box;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  background-color: white;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 300px;
+}
+
+.input-group {
+  display: flex;
+}
+
+.input-group button {
+  background-color: #f0f1f5;
+  border: 1px solid lightgrey;
+  cursor: pointer;
+}
+.input-group button:hover {
+  background-color: #dcdde0;
+}
+.input-group button:active {
+  background-color: #bdc2ca;
+}
+.input-group svg {
+  height: 24px;
+  width: 24px;
+}
+
+.input-group input {
+  font-size: 18px;
+  padding: 5px;
+  border: 1px solid lightgrey;
+}
+.input-group input:focus {
+  outline: 1px solid darkgrey;
+}

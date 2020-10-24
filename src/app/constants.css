@@ -2,7 +2,5 @@
   /*Below are variables references from JS (always change together)*/
   --chevron-width: 20px;
   --menu-height: 50px;
-  /*Card width with double padding plus scrollbar: 170 + 15 * 2 + 10 = */
-  --search-menu-width: 210px;
   --sidebar-menu-width: 300px;
 }

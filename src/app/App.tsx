@@ -6,11 +6,11 @@ import { ItemBeingDraggedAvatar } from "./ItemBeingDraggedAvatar";
 import { DropDestinationLine } from "./DropDestinationIndicator";
 import { dispatch, useStoreWithGlobalDispatch } from "./globalDispatch";
 import { Sidebar } from "./Sidebar";
-import  Card  from "./Card";
+import Card from "./Card";
 import { cn } from "./classNames";
 import Menu from "./Menu";
-import SearchResults from "./SearchResults";
 import * as actions from "./state/actions";
+import { RootState } from "./types";
 
 const App = () => {
   const state = useStoreWithGlobalDispatch();
@@ -24,10 +24,7 @@ const App = () => {
       >
         <Sidebar items={state.items} dragState={state.dragState} />
         <div
-          className={cn({
-            gallery: true,
-            "gallery-without-search": !state.options.isSearchVisible,
-          })}
+          className="gallery"
           onMouseMove={() => {
             if (
               state.dragState &&
@@ -37,18 +34,9 @@ const App = () => {
             }
           }}
         >
-          {state.items[state.itemFocused].children.map((id) => (
-            <Card key={id} dragState={state.dragState} item={state.items[id]} />
-          ))}
+          <Gallery state={state} />
         </div>
-
-        {state.options.isSearchVisible && (
-          <SearchResults
-            items={state.items["SEARCH"].children.map((id) => state.items[id])}
-            dragState={state.dragState}
-          />
-        )}
-        <Menu options={state.options} />
+        <Menu />
       </div>
       {state.itemIdBeingPlayed && (
         <Player videoId={state.items[state.itemIdBeingPlayed].videoId} />
@@ -58,6 +46,23 @@ const App = () => {
         dropDestinationPlaceholder={state.dropDestinationPlaceholder}
       />
     </div>
+  );
+};
+
+interface GalleryProps {
+  state: RootState;
+}
+const Gallery = ({ state }: GalleryProps) => {
+  const items = state.options.isSearchVisible
+    ? state.items["SEARCH"].children
+    : state.items[state.itemFocused].children;
+
+  return (
+    <>
+      {items.map((id) => (
+        <Card key={id} dragState={state.dragState} item={state.items[id]} />
+      ))}
+    </>
   );
 };
 
