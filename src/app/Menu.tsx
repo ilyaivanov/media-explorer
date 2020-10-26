@@ -6,7 +6,7 @@ import "./Menu.css";
 import { searchItems } from "./api";
 
 export const doTheSearch = (term: string) => {
-  dispatch(actions.toggleSearchVisibility());
+  dispatch(actions.focusItem("SEARCH"));
   searchItems(term).then((items) =>
     dispatch(actions.setNodeChildren("SEARCH", items))
   );

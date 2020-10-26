@@ -87,14 +87,10 @@ export const reducer = (state: RootState, action: RootAction): RootState => {
     return assignItemsInState(copy, action.nodeId, () => ({
       children: action.items.map((i) => i.id),
     }));
-  } else if (action.type === "TOGGLE_SEARCH_VISIBILITY") {
-    return {
-      ...state,
-      options: {
-        ...state.options,
-        isSearchVisible: !state.options.isSearchVisible,
-      },
-    };
+  } else if (action.type === "TOGGLE_PLAYLIST_PREVIEW") {
+    return assignItemsInState(state, action.itemId, (item) => ({
+      isPreviewOpen: !item.isPreviewOpen,
+    }));
   } else if (action.type === "MOUSE_DOWN_ON_ITEM") {
     return {
       ...state,

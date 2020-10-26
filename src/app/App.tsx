@@ -41,7 +41,7 @@ const App = () => {
       {state.itemIdBeingPlayed && (
         <Player videoId={state.items[state.itemIdBeingPlayed].videoId} />
       )}
-      <ItemBeingDraggedAvatar items={state.items} dragState={state.dragState} />
+      <ItemBeingDraggedAvatar items={state.items} state={state} />
       <DropDestinationLine
         dropDestinationPlaceholder={state.dropDestinationPlaceholder}
       />
@@ -53,14 +53,12 @@ interface GalleryProps {
   state: RootState;
 }
 const Gallery = ({ state }: GalleryProps) => {
-  const items = state.options.isSearchVisible
-    ? state.items["SEARCH"].children
-    : state.items[state.itemFocused].children;
+  const items = state.items[state.itemFocused].children;
 
   return (
     <>
       {items.map((id) => (
-        <Card key={id} dragState={state.dragState} item={state.items[id]} />
+        <Card key={id} dragState={state.dragState} state={state} item={state.items[id]} />
       ))}
     </>
   );

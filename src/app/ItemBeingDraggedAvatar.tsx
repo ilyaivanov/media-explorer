@@ -1,14 +1,15 @@
 import React, { useEffect } from "react";
-import { DragState, NodesContainer } from "./types";
+import { DragState, NodesContainer, RootState } from "./types";
 import { dispatch } from "./globalDispatch";
 import * as actions from "./state/actions";
 import Card from "./Card";
 interface Props {
   items: NodesContainer;
-  dragState: DragState;
+  state: RootState;
 }
 
-export const ItemBeingDraggedAvatar = ({ dragState, items }: Props) => {
+export const ItemBeingDraggedAvatar = ({ state, items }: Props) => {
+  const { dragState } = state;
   const onMouseMoveDuringDrag = (e: MouseEvent) => {
     dispatch(
       actions.mouseMove(
@@ -48,7 +49,11 @@ export const ItemBeingDraggedAvatar = ({ dragState, items }: Props) => {
           alignItems: "center",
         }}
       >
-        <Card isMini={isOnSidebar} item={items[dragState.itemId]} />
+        <Card
+          state={state}
+          isMini={isOnSidebar}
+          item={items[dragState.itemId]}
+        />
       </div>
     );
   } else return null;

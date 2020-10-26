@@ -38,9 +38,10 @@ export const playItem = (item: Item) =>
     type: "PLAY_ITEM",
   } as const);
 
-export const toggleSearchVisibility = () =>
+export const togglePlaylistPreview = (itemId: string) =>
   ({
-    type: "TOGGLE_SEARCH_VISIBILITY",
+    type: "TOGGLE_PLAYLIST_PREVIEW",
+    itemId,
   } as const);
 
 export const mouseDownOnItem = (itemId: string, offset: Point) =>

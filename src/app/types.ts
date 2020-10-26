@@ -12,6 +12,7 @@ export type RootState = {
 
 export interface Item {
   id: string;
+  isPreviewOpen?: boolean;
   children: string[];
   title: string;
   videoId?: string;
@@ -53,7 +54,6 @@ export type NodesContainer = {
 };
 
 export interface UIOptions {
-  isSearchVisible: boolean;
 }
 
 export type RootAction =
@@ -73,7 +73,7 @@ export type RootAction =
   | ReturnType<typeof actions.dropItem>
   | ReturnType<typeof actions.replaceCard>
   | ReturnType<typeof actions.setDropPosition>
-  | ReturnType<typeof actions.toggleSearchVisibility>
+  | ReturnType<typeof actions.togglePlaylistPreview>
   | ReturnType<typeof actions.setRootState>
   | ReturnType<typeof actions.removeItem>;
 
