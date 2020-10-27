@@ -110,6 +110,7 @@ export const createNewNode = () =>
     node: {
       children: [],
       isOpen: false,
+      itemType: "folder",
       title: "New Node",
       id: Math.random() + "",
     } as Item,

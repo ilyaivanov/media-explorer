@@ -29,19 +29,21 @@ export const traverseOpenFolders = (
       if (hasAnySubfolders(items, key))
         return [
           mapper(items[key], level),
-          ...items[key].children.filter(i => !items[i].videoId).map((i) => mapItem(i, level + 1)),
+          ...items[key].children.filter(i => isAContainer(items[i])).map((i) => mapItem(i, level + 1)),
         ];
     }
     return mapper(items[key], level);
   };
   if (items[rootKey])
     return items[rootKey].children
-      .filter(i => !items[i].videoId)
+      .filter(i => isAContainer(items[i]))
       .map((i) => mapItem(i, 0))
       .flat(Number.MAX_VALUE);
 };
 
 export const hasAnySubfolders = (items: NodesContainer, itemId: string) =>
   items[itemId].children
-    .map((id) => !items[id].videoId)
+    .map((id) => !items[id].itemId)
     .reduce((acc, val) => acc || val, false);
+
+const isAContainer = (item: Item) => item.itemType != "video";

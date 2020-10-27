@@ -15,7 +15,9 @@ export interface Item {
   isPreviewOpen?: boolean;
   children: string[];
   title: string;
-  videoId?: string;
+  image?: string;
+  itemType: "video" | "folder" | "playlist";
+  itemId?: string;
   isOpen?: boolean;
 }
 
@@ -53,8 +55,7 @@ export type NodesContainer = {
   [key: string]: Item;
 };
 
-export interface UIOptions {
-}
+export interface UIOptions {}
 
 export type RootAction =
   | ReturnType<typeof actions.toggleIsItemOpen>

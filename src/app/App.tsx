@@ -39,7 +39,7 @@ const App = () => {
         <Menu />
       </div>
       {state.itemIdBeingPlayed && (
-        <Player videoId={state.items[state.itemIdBeingPlayed].videoId} />
+        <Player videoId={state.items[state.itemIdBeingPlayed].itemId} />
       )}
       <ItemBeingDraggedAvatar items={state.items} state={state} />
       <DropDestinationLine

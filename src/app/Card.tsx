@@ -8,6 +8,7 @@ import "./Card.css";
 import rightArrow from "./icons/right-arrow.png";
 import playIcon from "./icons/play-button.png";
 import Chevron from "./icons/Chevron";
+import { loadPlaylistVideos } from "./api";
 interface Props {
   state: RootState;
   item: Item;
@@ -18,6 +19,7 @@ const Card = ({ state, item, dragState, isMini }: Props) => {
   if (item.isPreviewOpen) return <OpenCard state={state} item={item} />;
   const isCurrentItemBeingDragged =
     dragState?.type === "item_being_dragged" && dragState.itemId === item.id;
+  const hasImage = item.itemType != "folder";
   return (
     <div
       className={cn({
@@ -46,20 +48,16 @@ const Card = ({ state, item, dragState, isMini }: Props) => {
       }}
     >
       <img
-        className={cn({ "playlist-image": !item.videoId })}
-        width={!item.videoId ? undefined : 170}
+        className={cn({ "playlist-image": !hasImage })}
+        width={hasImage ? undefined : 170}
         draggable={false}
         height={96}
-        src={
-          item.videoId
-            ? `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`
-            : playlist
-        }
+        src={getImage(item)}
         alt=""
       />
 
       <div className="card-text">{item.title}</div>
-      {item.videoId ? (
+      {item.itemId ? (
         <img
           className="play-button"
           onMouseDown={(e) => e.stopPropagation()}
@@ -80,11 +78,17 @@ const Card = ({ state, item, dragState, isMini }: Props) => {
           alt=""
         />
       )}
-      {!item.videoId && (
+      {item.itemType != "video" && (
         <div
           className="expand-button"
           onMouseDown={(e) => e.stopPropagation()}
           onClick={() => {
+            console.log(item);
+            if (item.itemId && item.children.length === 0) {
+              loadPlaylistVideos(item.itemId).then((items) => {
+                dispatch(actions.setNodeChildren(item.id, items));
+              });
+            }
             dispatch(actions.togglePlaylistPreview(item.id));
           }}
         >
@@ -125,13 +129,10 @@ const OpenCard = ({ state, item }: { state: RootState; item: Item }) => {
 const OpenCardRow = ({ item }: { item: Item }) => {
   const title = item.title;
   const formatted = title.length >= 27 ? title.substr(0, 25) + "..." : title;
-  const image = item.videoId
-    ? `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`
-    : playlist;
   return (
     <div className="open-card-row">
-      <img className="open-card-video-image" src={image} alt="" />
-      {item.videoId && (
+      <img className="open-card-video-image" src={getImage(item)} alt="" />
+      {item.itemId && (
         <img
           className="open-card-play-button image-button"
           src={playIcon}
@@ -144,4 +145,7 @@ const OpenCardRow = ({ item }: { item: Item }) => {
   );
 };
 
+const getImage = (item: Item) => {
+  return item.image || playlist;
+};
 export default Card;
