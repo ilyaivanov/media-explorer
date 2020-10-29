@@ -13,6 +13,7 @@ body {
   justify-content: stretch;
   height: 100vh;
   width: 100vw;
+  max-width: 100vw;
 }
 
 .sidebar {
@@ -22,14 +23,9 @@ body {
   overflow-y: auto;
 }
 
-.gallery {
-  margin-top: var(--menu-height);
-  width: calc(100vw - var(--sidebar-menu-width));
-  overflow-y: auto;
+.main {
+  flex: 1;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  align-items: flex-start;
-  background-color: #e9e9e9;
+  flex-direction: column;
 }
+

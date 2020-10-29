@@ -1,0 +1,44 @@
+body {
+  color: white;
+  overflow: hidden;
+}
+.gallery {
+  flex: 1;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: row;
+  align-items: stretch;
+  height: 100vh;
+  background-color: #e9e9e9;
+}
+
+.column {
+  flex: 1;
+}
+
+.gallery {
+  /*noinspection CssInvalidPropertyValue*/
+  overflow-y: overlay;
+}
+
+.gallery::-webkit-scrollbar {
+  width: 8px;
+}
+
+.gallery::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+}
+
+/*utility classes*/
+.white-svg {
+  filter: invert(97%) sepia(4%) saturate(469%) hue-rotate(103deg)
+    brightness(119%) contrast(100%);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}

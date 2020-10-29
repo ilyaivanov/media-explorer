@@ -4,7 +4,6 @@ import playlist from "./playlist.png";
 import { cn } from "./classNames";
 import { dispatch } from "./globalDispatch";
 import * as actions from "./state/actions";
-import "./Card.css";
 import rightArrow from "./icons/right-arrow.png";
 import playIcon from "./icons/play-button.png";
 import Chevron from "./icons/Chevron";

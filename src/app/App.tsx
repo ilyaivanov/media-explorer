@@ -6,11 +6,10 @@ import { ItemBeingDraggedAvatar } from "./ItemBeingDraggedAvatar";
 import { DropDestinationLine } from "./DropDestinationIndicator";
 import { dispatch, useStoreWithGlobalDispatch } from "./globalDispatch";
 import { Sidebar } from "./Sidebar";
-import Card from "./Card";
 import { cn } from "./classNames";
 import Menu from "./Menu";
 import * as actions from "./state/actions";
-import { RootState } from "./types";
+import Gallery from "./gallery";
 
 const App = () => {
   const state = useStoreWithGlobalDispatch();
@@ -23,19 +22,8 @@ const App = () => {
         })}
       >
         <Sidebar items={state.items} dragState={state.dragState} />
-        <div
-          className="gallery"
-          onMouseMove={() => {
-            if (
-              state.dragState &&
-              state.dragState.type === "item_being_dragged"
-            ) {
-              dispatch(actions.removeSidebarDropIndicator());
-            }
-          }}
-        >
-          <Gallery state={state} />
-        </div>
+
+        <Gallery state={state} />
         <Menu />
       </div>
       {state.itemIdBeingPlayed && (
@@ -49,19 +37,19 @@ const App = () => {
   );
 };
 
-interface GalleryProps {
-  state: RootState;
-}
-const Gallery = ({ state }: GalleryProps) => {
-  const items = state.items[state.itemFocused].children;
-
-  return (
-    <>
-      {items.map((id) => (
-        <Card key={id} dragState={state.dragState} state={state} item={state.items[id]} />
-      ))}
-    </>
-  );
-};
+// interface GalleryProps {
+//   state: RootState;
+// }
+// const Gallery = ({ state }: GalleryProps) => {
+//   const items = state.items[state.itemFocused].children;
+//
+//   return (
+//     <>
+//       {items.map((id) => (
+//         <Card key={id} dragState={state.dragState} state={state} item={state.items[id]} />
+//       ))}
+//     </>
+//   );
+// };
 
 export default App;
