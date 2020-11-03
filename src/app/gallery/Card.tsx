@@ -5,6 +5,7 @@ import playBig from "../icons/play-button.svg";
 import "./Card.css";
 import { GAP } from "../constants";
 import { Item, RootState } from "../types";
+import { getPlaylistPreviewImages } from "../state/selectors";
 
 interface Props {
   isOpen: boolean;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 const Card = ({ isOpen, item, toggle, state }: Props) => {
+  const isVideo = item.itemType === "video";
   return (
     <div
       className={"box"}
@@ -24,20 +26,7 @@ const Card = ({ isOpen, item, toggle, state }: Props) => {
       {!isOpen && (
         <CardImage
           images={
-            item.id == "Six"
-              ? []
-              : item.id == "Seven"
-              ? [
-                  "https://i.ytimg.com/vi/xJ5z8GF1uys/mqdefault.jpg",
-                  "https://i.ytimg.com/vi/V4Iow4cWvP0/mqdefault.jpg",
-                ]
-              : item.id == "Ten"
-              ? [
-                  "https://i.ytimg.com/vi/xJ5z8GF1uys/mqdefault.jpg",
-                  "https://i.ytimg.com/vi/NDJn0SQehb4/mqdefault.jpg",
-                  "https://i.ytimg.com/vi/V4Iow4cWvP0/mqdefault.jpg",
-                ]
-              : [item.image]
+            item.image ? [item.image] : getPlaylistPreviewImages(state, item.id)
           }
         />
       )}
@@ -47,18 +36,20 @@ const Card = ({ isOpen, item, toggle, state }: Props) => {
         </div>
       )}
 
-      <div
-        className="gallery-chevron-container"
-        onClick={() => toggle(item.id)}
-      >
-        <img
-          src={chevron}
-          className={
-            "gallery-chevron white-svg " +
-            (isOpen ? "gallery-chevron-open" : "")
-          }
-        />
-      </div>
+      {!isVideo && (
+        <div
+          className="gallery-chevron-container"
+          onClick={() => toggle(item.id)}
+        >
+          <img
+            src={chevron}
+            className={
+              "gallery-chevron white-svg " +
+              (isOpen ? "gallery-chevron-open" : "")
+            }
+          />
+        </div>
+      )}
       <div className="box-title">{item.title}</div>
       {isOpen && <TrackList state={state} parentId={item.id} />}
     </div>
@@ -95,7 +86,7 @@ const CardImage = ({ images }: any) => {
 };
 interface TrackListProps {
   state: RootState;
-    parentId: string;
+  parentId: string;
 }
 const TrackList = ({ state, parentId }: TrackListProps) => (
   <div className="tracks-container">

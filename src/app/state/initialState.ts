@@ -4131,8 +4131,7 @@ items1["SEARCH"] = {
   title: "SEARCH",
   children: [],
 };
-// @ts-ignore
-window.items = items1;
+
 export const initialState: RootState = {
   items: items1,
   itemIdBeingPlayed: undefined,
