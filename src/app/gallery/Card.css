@@ -128,6 +128,19 @@
   transform: rotateZ(270deg);
 }
 
+.tracks-container {
+  max-height: 412px;
+  /*noinspection CssInvalidPropertyValue*/
+  overflow-y: overlay;
+}
+
+.tracks-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tracks-container::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+}
 .track {
   display: flex;
   align-items: center;
