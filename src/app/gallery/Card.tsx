@@ -5,10 +5,13 @@ import playBig from "../icons/play-button.svg";
 import "./Card.css";
 import { GAP } from "../constants";
 import { Item, RootState } from "../types";
-import { getPlaylistPreviewImages } from "../state/selectors";
+import { getPlaylistPreviewVideos } from "../state/selectors";
+import { dispatch } from "../globalDispatch";
+import * as actions from "../state/actions";
+import { cn } from "../classNames";
 
 interface Props {
-  isOpen: boolean;
+  isOpen?: boolean;
   item: Item;
   toggle: (id: string) => void;
   state: RootState;
@@ -16,22 +19,23 @@ interface Props {
 
 const Card = ({ isOpen, item, toggle, state }: Props) => {
   const isVideo = item.itemType === "video";
+  const previewItems = item.image
+    ? [item]
+    : getPlaylistPreviewVideos(state, item.id);
+  const onPlay = () => dispatch(actions.playItem(previewItems[0]));
   return (
     <div
-      className={"box"}
+      className={cn({
+        box: true,
+        "box-playing": state.itemIdBeingPlayed == item.id,
+      })}
       style={{
         marginBottom: GAP,
       }}
     >
+      {!isOpen && <CardImage images={previewItems.map((i) => i.image)} />}
       {!isOpen && (
-        <CardImage
-          images={
-            item.image ? [item.image] : getPlaylistPreviewImages(state, item.id)
-          }
-        />
-      )}
-      {!isOpen && (
-        <div className="card-image-overlay overlay">
+        <div className="card-image-overlay overlay" onClick={onPlay}>
           <img src={playBig} className={"play white-svg"} />
         </div>
       )}
@@ -56,7 +60,7 @@ const Card = ({ isOpen, item, toggle, state }: Props) => {
   );
 };
 
-const CardImage = ({ images }: any) => {
+const CardImage = ({ images }: { images: (string | undefined)[] }) => {
   if (images.length === 0) {
     return <div className={"empty-image"}>Empty</div>;
   } else if (images.length === 1) {
@@ -92,7 +96,7 @@ const TrackList = ({ state, parentId }: TrackListProps) => (
   <div className="tracks-container">
     {state.items[parentId].children.map((id) => {
       const item = state.items[id];
-      return <Track title={item.title} image={item.image} />;
+      return <Track key={id} title={item.title} image={item.image} />;
     })}
   </div>
 );

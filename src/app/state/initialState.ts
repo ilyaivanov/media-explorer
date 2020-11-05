@@ -2,6 +2,21 @@ import { NodesContainer, RootState } from "../types";
 
 const itemsArray = [
   {
+    id: "playground1",
+    title: "My Playground",
+    type: "folder",
+    children: [
+      {
+        id: "playground11",
+        title: "Sync24 - DOT",
+        itemId: "vQFDW0_GB8Q",
+        type: "video",
+        image: "https://i.ytimg.com/vi/vQFDW0_GB8Q/mqdefault.jpg",
+        children: [],
+      },
+    ],
+  },
+  {
     id: "6AMvzfzD1jNf0shVG8Fy",
     title: "Trance/House Sets",
     type: "folder",

@@ -24,7 +24,7 @@
   position: relative;
   height: 0;
   width: 100%;
-  padding-bottom: 75%; /*proportion of youtube video 120x90*/
+  padding-bottom: 56%; /*proportion of youtube video 320x180*/
 }
 .two-image-container img {
   width: 50%;
@@ -53,6 +53,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  overflow-y: hidden; /*fixing issue for images of Deleted videos being higher*/
 }
 .column > img {
   width: 100%;
@@ -77,6 +78,9 @@
 .box:hover .card-image-overlay,
 .box:hover .gallery-chevron-container {
   opacity: 1;
+}
+.box-playing{
+  background-color: #980000;
 }
 
 .card-image-overlay {
@@ -164,6 +168,7 @@
 .track-image {
   border-radius: 2px;
   width: 32px;
+  min-width: 32px;
   height: 32px;
   object-fit: cover;
 }

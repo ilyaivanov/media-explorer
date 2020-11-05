@@ -1,4 +1,4 @@
-import {Item, NodesContainer, RootState} from "../types";
+import { Item, NodesContainer, RootState } from "../types";
 
 export const traverseOpenNodes = <T>(
   items: NodesContainer,
@@ -69,12 +69,13 @@ export const hasAnySubfolders = (items: NodesContainer, itemId: string) =>
     .map((id) => !items[id].itemId)
     .reduce((acc, val) => acc || val, false);
 
-  export const getPlaylistPreviewImages = (state: RootState, playlistID: string) => {
+export const getPlaylistPreviewVideos = (
+  state: RootState,
+  playlistID: string
+): Item[] => {
   return traverseAllNodes(state.items, playlistID, (item) => item)
-    .map((item) => item.image)
-    .filter((image) => !!image)
+    .filter((item) => !!item.image)
     .slice(0, 3);
 };
-
 
 const isAContainer = (item: Item) => item.itemType != "video";

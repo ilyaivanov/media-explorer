@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./App.css";
 import Card from "./Card";
 import { menuHeight, GAP, MIN_COLUMN_WIDTH } from "../constants";
 import { Item, RootState } from "../types";
