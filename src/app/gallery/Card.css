@@ -163,9 +163,7 @@
 .track:last-of-type {
   border-bottom: none;
 }
-.track:first-of-type {
-  padding-top: 0;
-}
+
 .track-image {
   border-radius: 2px;
   width: 32px;
