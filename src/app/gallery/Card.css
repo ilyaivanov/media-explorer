@@ -80,7 +80,8 @@
   opacity: 1;
 }
 .box-playing{
-  background-color: #980000;
+  color: black;
+  background-color: #45d3b9;
 }
 
 .card-image-overlay {

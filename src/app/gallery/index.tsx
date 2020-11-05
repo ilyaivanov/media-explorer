@@ -13,12 +13,6 @@ function Index({ state }: Props) {
 
   const getNumberOfColumns = () => {
     if (galleryRef.current) {
-      console.log(
-        galleryRef.current?.clientWidth,
-        Math.floor(
-          (galleryRef.current.clientWidth - GAP) / (MIN_COLUMN_WIDTH + GAP)
-        )
-      );
       return Math.floor(
         (galleryRef.current.clientWidth - GAP) / (MIN_COLUMN_WIDTH + GAP)
       );

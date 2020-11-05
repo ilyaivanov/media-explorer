@@ -1,18 +1,23 @@
 import React from "react";
-import { DragState, Item, NodesContainer } from "./types";
-import { hasAnySubfolders, traverseOpenFolders } from "./state/selectors";
+import { DragState, Item, NodesContainer, RootState } from "./types";
+import {
+  hasAnySubfolders,
+  isParentOf,
+  traverseOpenFolders,
+} from "./state/selectors";
 import { dispatch } from "./globalDispatch";
 import * as actions from "./state/actions";
 import { cn } from "./classNames";
 import * as cs from "./constants";
-import './Sidebar.css'
+import "./Sidebar.css";
 import Chevron from "./icons/Chevron";
+import noteIcon from "./icons/musical-note.svg";
 interface Props {
-  items: NodesContainer;
+  state: RootState;
   dragState: DragState;
 }
 
-export const Sidebar = ({ dragState, items }: Props) => (
+export const Sidebar = ({ dragState, state }: Props) => (
   <div
     className="sidebar"
     onMouseMove={() => {
@@ -25,14 +30,14 @@ export const Sidebar = ({ dragState, items }: Props) => (
     <Row
       dragState={dragState}
       isRoot
-      items={items}
+      state={state}
       level={0}
-      item={items.HOME}
+      item={state.items.HOME}
     />
-    {traverseOpenFolders(items, "HOME", (item, level) => {
+    {traverseOpenFolders(state.items, "HOME", (item, level) => {
       return (
         <Row
-          items={items}
+          state={state}
           key={item.id}
           level={level}
           item={item}
@@ -44,13 +49,13 @@ export const Sidebar = ({ dragState, items }: Props) => (
   </div>
 );
 interface RowProps {
-  items: NodesContainer;
+  state: RootState;
   item: Item;
   level: number;
   isRoot?: boolean;
   dragState: DragState;
 }
-const Row = ({ level, item, isRoot, items, dragState }: RowProps) => (
+const Row = ({ level, item, isRoot, state, dragState }: RowProps) => (
   <div
     className="row"
     onClick={() => dispatch(actions.focusItem(item.id))}
@@ -86,10 +91,10 @@ const Row = ({ level, item, isRoot, items, dragState }: RowProps) => (
         (isRoot ? cs.chevronWidth : 0) +
         cs.rowLeftPadding +
         cs.levelOffsetForMenu * level +
-        (hasAnySubfolders(items, item.id) ? 0 : cs.chevronWidth),
+        (hasAnySubfolders(state.items, item.id) ? 0 : cs.chevronWidth),
     }}
   >
-    {!isRoot && hasAnySubfolders(items, item.id) && (
+    {!isRoot && hasAnySubfolders(state.items, item.id) && (
       <div
         className={cn({ chevron: true, open: item.isOpen })}
         onClick={(e) => {
@@ -101,7 +106,23 @@ const Row = ({ level, item, isRoot, items, dragState }: RowProps) => (
       </div>
     )}
 
-    {!isRoot && <div className="circle" />}
-    <div className="text">{item.title}</div>
+    {!isRoot &&
+      (state.itemIdBeingPlayed &&
+      isParentOf(state.items, item.id, state.itemIdBeingPlayed) ? (
+        <img src={noteIcon} className={"note-icon play-svg"} alt="" />
+      ) : (
+        <div className="circle" />
+      ))}
+    <div
+      className={cn({
+        "node-focused": !isRoot && (isParentOf(
+          state.items,
+          item.id,
+          state.itemFocused
+        ) || item.id === state.itemFocused),
+      })}
+    >
+      {item.title}
+    </div>
   </div>
 );

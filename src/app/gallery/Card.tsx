@@ -5,7 +5,7 @@ import playBig from "../icons/play-button.svg";
 import "./Card.css";
 import { GAP } from "../constants";
 import { Item, RootState } from "../types";
-import { getPlaylistPreviewVideos } from "../state/selectors";
+import { getPlaylistPreviewVideos, isParentOf } from "../state/selectors";
 import { dispatch } from "../globalDispatch";
 import * as actions from "../state/actions";
 import { cn } from "../classNames";
@@ -27,7 +27,10 @@ const Card = ({ isOpen, item, toggle, state }: Props) => {
     <div
       className={cn({
         box: true,
-        "box-playing": state.itemIdBeingPlayed == item.id,
+        "box-playing":
+          !!state.itemIdBeingPlayed &&
+          (state.itemIdBeingPlayed === item.id ||
+            isParentOf(state.items, item.id, state.itemIdBeingPlayed)),
       })}
       style={{
         marginBottom: GAP,

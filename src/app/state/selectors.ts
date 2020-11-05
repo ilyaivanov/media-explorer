@@ -69,6 +69,16 @@ export const hasAnySubfolders = (items: NodesContainer, itemId: string) =>
     .map((id) => !items[id].itemId)
     .reduce((acc, val) => acc || val, false);
 
+export const isParentOf = (
+  items: NodesContainer,
+  parentId: string,
+  childId: string
+) => {
+  return (
+    traverseAllNodes(items, parentId, (item) => item.id).indexOf(childId) >= 0
+  );
+};
+
 export const getPlaylistPreviewVideos = (
   state: RootState,
   playlistID: string

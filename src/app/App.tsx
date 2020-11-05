@@ -19,7 +19,7 @@ const App = () => {
           "page-during-drag": state.dragState.type !== "not_pressed",
         })}
       >
-        <Sidebar items={state.items} dragState={state.dragState} />
+        <Sidebar state={state} dragState={state.dragState} />
 
         <Gallery state={state} />
         <Menu />

@@ -29,7 +29,6 @@ body {
   flex-direction: column;
 }
 
-
 body {
   color: white;
   overflow: hidden;
@@ -63,8 +62,19 @@ body {
 
 /*utility classes*/
 .white-svg {
+  /*filter for white*/
   filter: invert(97%) sepia(4%) saturate(469%) hue-rotate(103deg)
-  brightness(119%) contrast(100%);
+    brightness(119%) contrast(100%);
+}
+
+.play-svg {
+  /*filter for #45D3B9*/
+  filter: invert(66%) sepia(57%) saturate(438%) hue-rotate(119deg)
+    brightness(100%) contrast(85%);
+}
+
+.play-background {
+  background-color: #45d3b9;
 }
 
 .overlay {
