@@ -22,7 +22,6 @@
   background-color: transparent;
 }
 .node-focused{
-  font-weight: bolder;
   color: #45d3b9;
 }
 .circle {
@@ -32,6 +31,9 @@
   height: 6px;
   border-radius: 6px;
   background-color: white;
+}
+.circle-focused{
+  background-color: #45d3b9;
 }
 
 .note-icon {

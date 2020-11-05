@@ -66,7 +66,7 @@ const Column = ({
   openCards: any;
 }) => {
   return (
-    <div className="column" style={{ marginRight: GAP }}>
+    <div className="gallery-column" style={{ marginRight: GAP }}>
       {items.map((i) => (
         <Card
           state={state}

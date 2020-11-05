@@ -23,14 +23,14 @@ const Card = ({ isOpen, item, toggle, state }: Props) => {
     ? [item]
     : getPlaylistPreviewVideos(state, item.id);
   const onPlay = () => dispatch(actions.playItem(previewItems[0]));
+  const isPlaying =
+    !!state.itemIdBeingPlayed &&
+    (state.itemIdBeingPlayed === item.id ||
+      isParentOf(state.items, item.id, state.itemIdBeingPlayed));
   return (
     <div
       className={cn({
         box: true,
-        "box-playing":
-          !!state.itemIdBeingPlayed &&
-          (state.itemIdBeingPlayed === item.id ||
-            isParentOf(state.items, item.id, state.itemIdBeingPlayed)),
       })}
       style={{
         marginBottom: GAP,
@@ -57,7 +57,14 @@ const Card = ({ isOpen, item, toggle, state }: Props) => {
           />
         </div>
       )}
-      <div className="box-title">{item.title}</div>
+      <div
+        className={cn({
+          "box-title": true,
+          "box-playing": isPlaying,
+        })}
+      >
+        {item.title}
+      </div>
       {isOpen && <TrackList state={state} parentId={item.id} />}
     </div>
   );
