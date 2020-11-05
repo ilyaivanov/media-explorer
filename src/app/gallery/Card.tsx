@@ -5,9 +5,7 @@ import playBig from "../icons/play-button.svg";
 import "./Card.css";
 import { GAP } from "../constants";
 import { Item, RootState } from "../types";
-import { getPlaylistPreviewVideos, isParentOf } from "../state/selectors";
-import { dispatch } from "../globalDispatch";
-import * as actions from "../state/actions";
+import { dispatch, actions, selectors } from "../state";
 import { cn } from "../classNames";
 
 interface Props {
@@ -21,12 +19,12 @@ const Card = ({ isOpen, item, toggle, state }: Props) => {
   const isVideo = item.itemType === "video";
   const previewItems = item.image
     ? [item]
-    : getPlaylistPreviewVideos(state, item.id);
+    : selectors.getPlaylistPreviewVideos(state, item.id);
   const onPlay = () => dispatch(actions.playItem(previewItems[0]));
   const isPlaying =
     !!state.itemIdBeingPlayed &&
     (state.itemIdBeingPlayed === item.id ||
-      isParentOf(state.items, item.id, state.itemIdBeingPlayed));
+      selectors.isParentOf(state.items, item.id, state.itemIdBeingPlayed));
   return (
     <div
       className={cn({

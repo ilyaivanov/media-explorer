@@ -1,9 +1,7 @@
 import React from "react";
 import "./constants.css";
 import { Player } from "./Player";
-import { ItemBeingDraggedAvatar } from "./ItemBeingDraggedAvatar";
-import { DropDestinationLine } from "./DropDestinationIndicator";
-import { useStoreWithGlobalDispatch } from "./globalDispatch";
+import { useStoreWithGlobalDispatch } from "./state";
 import { Sidebar } from "./Sidebar";
 import { cn } from "./classNames";
 import Menu from "./Menu";
@@ -27,10 +25,6 @@ const App = () => {
       {state.itemIdBeingPlayed && (
         <Player videoId={state.items[state.itemIdBeingPlayed].itemId} />
       )}
-      <ItemBeingDraggedAvatar items={state.items} state={state} />
-      <DropDestinationLine
-        dropDestinationPlaceholder={state.dropDestinationPlaceholder}
-      />
     </div>
   );
 };

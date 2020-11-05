@@ -1,8 +1,8 @@
 import React from "react";
 import YouTube from "react-youtube";
 import "./Player.css";
-import { dispatch } from "./globalDispatch";
-import * as actions from "./state/actions";
+import { dispatch, actions } from "./state";
+
 export const Player = ({ videoId }: { videoId?: string }) => {
   return (
     <div className="player">

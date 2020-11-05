@@ -1,17 +1,12 @@
 import React from "react";
-import { DragState, Item, NodesContainer, RootState } from "./types";
-import {
-  hasAnySubfolders,
-  isParentOf,
-  traverseOpenFolders,
-} from "./state/selectors";
-import { dispatch } from "./globalDispatch";
-import * as actions from "./state/actions";
+import { DragState, Item, RootState } from "./types";
+import { dispatch, actions, selectors } from "./state";
 import { cn } from "./classNames";
 import * as cs from "./constants";
 import "./Sidebar.css";
 import Chevron from "./icons/Chevron";
 import noteIcon from "./icons/musical-note.svg";
+
 interface Props {
   state: RootState;
   dragState: DragState;
@@ -34,7 +29,7 @@ export const Sidebar = ({ dragState, state }: Props) => (
       level={0}
       item={state.items.HOME}
     />
-    {traverseOpenFolders(state.items, "HOME", (item, level) => {
+    {selectors.traverseOpenFolders(state.items, "HOME", (item, level) => {
       return (
         <Row
           state={state}
@@ -58,11 +53,11 @@ interface RowProps {
 const Row = ({ level, item, isRoot, state, dragState }: RowProps) => {
   const isFocused =
     !isRoot &&
-    (isParentOf(state.items, item.id, state.itemFocused) ||
+    (selectors.isParentOf(state.items, item.id, state.itemFocused) ||
       item.id === state.itemFocused);
   const isPlaying =
     state.itemIdBeingPlayed &&
-    isParentOf(state.items, item.id, state.itemIdBeingPlayed);
+    selectors.isParentOf(state.items, item.id, state.itemIdBeingPlayed);
   return (
     <div
       className="row"
@@ -99,10 +94,10 @@ const Row = ({ level, item, isRoot, state, dragState }: RowProps) => {
           (isRoot ? cs.chevronWidth : 0) +
           cs.rowLeftPadding +
           cs.levelOffsetForMenu * level +
-          (hasAnySubfolders(state.items, item.id) ? 0 : cs.chevronWidth),
+          (selectors.hasAnySubfolders(state.items, item.id) ? 0 : cs.chevronWidth),
       }}
     >
-      {!isRoot && hasAnySubfolders(state.items, item.id) && (
+      {!isRoot && selectors.hasAnySubfolders(state.items, item.id) && (
         <div
           className={cn({ chevron: true, open: item.isOpen })}
           onClick={(e) => {

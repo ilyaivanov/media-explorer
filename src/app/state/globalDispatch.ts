@@ -1,8 +1,8 @@
-import { RootDispatch, RootState } from "./types";
+import { RootDispatch, RootState } from "../types";
 import _ from "lodash";
-import { initialState } from "./state/initialState";
+import { initialState } from "./initialState";
 import React, { useEffect } from "react";
-import { reducer } from "./state/reducer";
+import { reducer } from "./reducer";
 
 export let dispatch: RootDispatch;
 

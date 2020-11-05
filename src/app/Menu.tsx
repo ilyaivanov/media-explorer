@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import * as actions from "./state/actions";
-import { dispatch } from "./globalDispatch";
-import { initialState } from "./state/initialState";
+import { dispatch, initialState, actions } from "./state";
 import "./Menu.css";
 import { searchItems } from "./api";
 
